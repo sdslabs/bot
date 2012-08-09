@@ -1,1 +1,1 @@
-web: bin/hubot -a partychat-hooks -n Hubot
+web: bin/hubot -a partychat-hooks -n bot
