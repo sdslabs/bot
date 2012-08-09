@@ -8,7 +8,9 @@
 #   hubot die - End hubot process
 
 module.exports = (robot) ->
+  console.log "loaded pingpong"
   robot.respond /PING$/i, (msg) ->
+    console.log "wtf"
     msg.send "PONG"
 
   robot.respond /ECHO (.*)$/i, (msg) ->
