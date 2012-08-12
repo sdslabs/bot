@@ -1,1 +1,27 @@
-["redis-brain.coffee", "tweet.coffee", "shipit.coffee","ping.coffee","google-images.coffee","help.coffee","httpd.coffee","maps.coffee","math.coffee","pugme.coffee","rules.coffee","storage.coffee","translate.coffee","youtube.coffee","9gag.coffee","ambush.coffee","coderwall.coffee","coin.coffee","cricket.coffee","decide.coffee","goodnight.coffee","remind,coffee","twitter.coffee","weather.coffee","working-on.coffee"]
+[
+  "redis-brain.coffee",
+  "tweet.coffee",
+  "shipit.coffee",
+  "ping.coffee",
+  "google-images.coffee",
+  "help.coffee",
+  "httpd.coffee",
+  "maps.coffee",
+  "math.coffee",
+  "pugme.coffee",
+  "rules.coffee",
+  "storage.coffee",
+  "translate.coffee",
+  "youtube.coffee",
+  "9gag.coffee",
+  "ambush.coffee",
+  "coderwall.coffee",
+  "coin.coffee",
+  "cricket.coffee",
+  "decide.coffee",
+  "goodnight.coffee",
+  "remind.coffee",
+  "twitter.coffee",
+  "weather.coffee",
+  "working-on.coffee"
+]
