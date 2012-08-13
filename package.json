@@ -21,7 +21,8 @@
     "hubot-partychat-hooks": ">= 0.0.1",
     "htmlparser": "1.7.6",
     "soupselect": "0.2.0",
-    "jsdom": "0.2.14"
+    "jsdom": "0.2.14",
+    "cleverbot-node": ">=0.1.1"
   },
 
   "engines": {
