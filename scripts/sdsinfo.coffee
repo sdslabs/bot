@@ -30,5 +30,8 @@ module.exports = (robot) ->
        msg.send "Error"
 
 	sendTheMsg = (row) ->
+       details = "That could be Nemo, Yoda or OMGAarti" if username == "bot"
        if (row.title.$t.toLowerCase().indexOf(username.toLowerCase())>=0)
         details = row.content.$t
+       if username == "bot"
+        details = "That could be Nemo, Yoda or OMGAarti" 
