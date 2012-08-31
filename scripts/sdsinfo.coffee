@@ -1,14 +1,15 @@
 # Description:
 #   gets sdslabs member's info from google doc
+#   Type a partial name to get all matches
 #
 # Dependencies:
 #   None
 #
 # Configuration:
-#   None
+#   INFO_SPREADSHEET_URL
 #
 # Commands:
-#   hubot info <full name>
+#   hubot info <partial name>
 #
 # Author:
 #   Shashank Mehta
@@ -19,7 +20,7 @@ username = ""
 module.exports = (robot) ->
   robot.respond /(info|sdsinfo) (.+)$/i, (msg) ->
    username = msg.match[2]
-   msg.http("https://spreadsheets.google.com/feeds/list/0Airjt4b64pBKdEdQV0phZ3FEc3VJeDNKN2liRXVGSVE/od6/public/basic?alt=json")
+   msg.http(process.env.INFO_SPREADSHEET_URL)
     .get() (err, res, body) ->
       response = JSON.parse body
       if response["version"]
@@ -29,5 +30,5 @@ module.exports = (robot) ->
        msg.send "Error"
 
 	sendTheMsg = (row) ->
-       if (row.title.$t.toLowerCase() == username)
+       if (row.title.$t.toLowerCase().indexOf(username.toLowerCase())>=0)
         details = row.content.$t
