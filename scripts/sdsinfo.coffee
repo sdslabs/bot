@@ -35,3 +35,5 @@ module.exports = (robot) ->
         details = row.content.$t
        if username == "bot"
         details = "That could be Nemo, Yoda or OMGAarti" 
+       if username == "pawar"
+        details = "Feel the POWER!" 
