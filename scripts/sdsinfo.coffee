@@ -40,4 +40,3 @@ module.exports = (robot) ->
        if username == "bot"
         details = "That could be Nemo, Yoda or OMGAarti" 
        if username == "pawar"
-        details = "Feel the POWER!"
