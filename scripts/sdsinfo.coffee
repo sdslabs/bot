@@ -22,10 +22,14 @@ module.exports = (robot) ->
    username = msg.match[2]
    msg.http(process.env.INFO_SPREADSHEET_URL)
     .get() (err, res, body) ->
-      response = JSON.parse body
+      response = JSON.parse body 
+      details = -1
       if response["version"]
        reply = sendTheMsg(row) for row in response.feed.entry
-       msg.send details
+       if details != -1
+        msg.send details
+       else 
+        msg.send "User Not found"
       else
        msg.send "Error"
 
@@ -35,3 +39,5 @@ module.exports = (robot) ->
         details = row.content.$t
        if username == "bot"
         details = "That could be Nemo, Yoda or OMGAarti" 
+       if username == "pawar"
+        details = "Feel the POWER!"
