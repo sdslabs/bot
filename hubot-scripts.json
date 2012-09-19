@@ -17,6 +17,7 @@
   "httpd.coffee",
   "math.coffee",
   "ping.coffee",
+  "presence.coffee",
   "redis-brain.coffee",
   "remind.coffee",
   "rules.coffee",
