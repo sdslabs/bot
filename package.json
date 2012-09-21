@@ -22,7 +22,9 @@
     "htmlparser": "1.7.6",
     "soupselect": "0.2.0",
     "jsdom": "0.2.14",
-    "cleverbot-node": ">=0.1.1"
+    "cleverbot-node": ">=0.1.1",
+    "shellwords":">=0.1.0",
+    "bang":">=1.0.0"
   },
 
   "engines": {
