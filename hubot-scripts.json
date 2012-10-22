@@ -19,6 +19,7 @@
   "ping.coffee",
   "presence.coffee",
   "redis-brain.coffee",
+  "redmine.coffee",
   "remind.coffee",
   "rules.coffee",
   "sdsinfo.coffee",
