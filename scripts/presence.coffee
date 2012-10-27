@@ -14,7 +14,7 @@
 #   abhshkdz
 
 module.exports = (robot) ->
-  robot.respond /who all in lab/i, (msg) ->
+  robot.respond /who.*lab/i, (msg) ->
     msg.http("http://sdslabs.co/presence/").get() (err, res, body) ->
       if body is '[]'
         msg.send 'No one here to give me company.'
