@@ -19,7 +19,7 @@ ways_to_say_good_night = [
   "Like I'm going to let you get any sleep",
   "LOOK...the moon is calling you, SEE...the stars are shining for you, HEAR... my heart saying good night.",
   "Sleep tight, don't let the bed bugs bite",
-  "May you never urinate the sweet sweet sounds of 70's disco funk",
+  "I'll be here, all alone, waiting"
   "So long, and thanks for all the fish.",
   "Finally",
   "À voir!",
@@ -33,7 +33,17 @@ ways_to_say_good_night = [
   "In a while, crocodile",
   "SHOO! SHOO!",
   "No more of you.",
-  "Avada Kedavra"
+  "Avada Kedavra",
+  "Ok. Tata. Byebye",
+  "Connection: close",
+  "End Of Line",
+  "Farewell! God knows when we shall meet again.",
+  "You are the weakest link - goodbye!",
+  "आप  इस  राउंड  के  कमज़ोर  कड़ी  हैं. आप जा सकते हैं. नमस्ते",
+  "If I leave here tomorrow, will you still remember me?",
+  "Don't leave me here!",
+  "If you say so.",
+  "Connection closed by remote host"
 ]
 
 module.exports = (robot) ->
