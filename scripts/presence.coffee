@@ -25,5 +25,4 @@ module.exports = (robot) ->
         else
           msg.send 'I sense '+data.length+' humans in lab.'
         for i of data
-          last = data[i].name.split(' ').length
-          msg.send data[i].name.split(' ')[last-1]
+          msg.send data[i].name.split(' ')[0]
