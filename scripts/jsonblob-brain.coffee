@@ -18,8 +18,6 @@
 module.exports = (robot) ->
   #Get the data from Jsonblob's api for the first time
   robot.http(process.env.JSONBLOB_URL).get() (err, res, body) ->
-    console.log "Got back data"
-    console.log body
     robot.brain.mergeData JSON.parse(body)
 
   robot.brain.on 'save', (data = {}) ->
