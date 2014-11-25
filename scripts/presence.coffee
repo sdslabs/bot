@@ -26,4 +26,4 @@ module.exports = (robot) ->
           msg.send 'I sense '+data.length+' humans in lab.'
         for i of data
           msg.send data[i].name.split(' ')[0]
-      msg.send "Here's a pic: https://presence.sdslabs.co/spycam.png"
+      msg.send "Here's a pic: https://presence.sdslabs.co/spycam.png?q="+Math.random()
