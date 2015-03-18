@@ -35,10 +35,8 @@ module.exports = (robot) ->
     Alias
 
   # returns last score
-  lastScore = (name, field, aliases) ->
+  lastScore = (name, field) ->
     name = name.toLowerCase()
-    if aliases[name]?
-      name = aliases[name]
     lastscore = field[name] or 0
     lastscore
 
