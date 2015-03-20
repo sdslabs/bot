@@ -36,9 +36,8 @@ module.exports = (robot)->
 		user = robot.brain.userForName name
 		k = key()
 		if typeof user is 'object'
-			k[k.length] = "#{name}"
 			msg.send "Okay #{name} has keys"
-
+			k = user.name
 		robot.brain.set("key",k)	
 
 
@@ -75,7 +74,7 @@ module.exports = (robot)->
 
 		robot.brain.set("key",k)			
 
-	robot.respond /(i|I) (have given|gave|had given) (the key|key|keys|a key) to (.+)/i , (msg)->
+	robot.respond /(i|I) (have given|gave|had given) (the key|key|keys|a key|the keys) to (.+)/i , (msg)->
 		othername = msg.match[4]
 		name = msg.message.user.name
 		k = key()
@@ -100,6 +99,7 @@ module.exports = (robot)->
 		if msgText is ""
 			msg.send "Ah!Nobody here informed me about the keys. Don't hold me responsible for this :expressionless:"
 		else
+			msgText+=" is the one who has the keys"
 			msg.send msgText	
 		robot.brain.set("key" ,k)	
 
