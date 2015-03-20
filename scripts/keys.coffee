@@ -42,14 +42,14 @@ module.exports = (robot)->
 		robot.brain.set("key",k)	
 
 
-	robot.respond /i (don\'t'|dont|do not) (has|have) (the key|key|keys|a key)/i , (msg)->
+	robot.respond /i (don\'t|dont|do not) (has|have) (the key|key|keys|a key)/i , (msg)->
 		name = msg.message.user.name
 		user = robot.brain.userForName name
 		k = key()
 		i = k.indexOf(user)
 		k.splice(i, 1)
 		if typeof user is 'object'
-			msg.send "Okay #{name} doesn't has the keys. Who got the keys then?"
+			msg.send "Okay #{name} doesn't have keys. Who got the keys then?"
 		robot.brain.set("key",k)	
 
 
@@ -63,7 +63,7 @@ module.exports = (robot)->
 			else if othername is robot.name
 				msg.send "How am I supposed to take those keys? #{name} is a liar!"
 			else
-				users = robot.brain.usersForFuzzyName(othername)
+				users = robot.brain.userForName(othername)
 				if users.length is 1
 					otheruser = users[0]
 					k[k.length] = "#{otheruser.name}"
