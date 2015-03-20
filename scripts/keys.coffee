@@ -26,7 +26,7 @@ module.exports = (robot)->
 
 
 	key = ()->
-		Key = robot.brain.get("key") or []
+		Key = robot.brain.get("key") or ""
 		robot.brain.set("key" ,Key)
 		Key	
 
@@ -46,10 +46,13 @@ module.exports = (robot)->
 		name = msg.message.user.name
 		user = robot.brain.userForName name
 		k = key()
-		i = k.indexOf(user)
-		k.splice(i, 1)
+		if k is name
+			k = ""
 		if typeof user is 'object'
-			msg.send "Okay #{name} doesn't have keys. Who got the keys then?"
+			if k is ""
+				msg.send "Okay #{name} doesn't have keys. Who got the keys then?"
+			else
+				msg.send "Yes , i know buddy, its because #{k} has got the keys"	
 		robot.brain.set("key",k)	
 
 
@@ -63,21 +66,17 @@ module.exports = (robot)->
 			else if othername is robot.name
 				msg.send "How am I supposed to take those keys? #{name} is a liar!"
 			else
-				users = robot.brain.userForName(othername)
-				if users.length is 1
-					otheruser = users[0]
-					k[k.length] = "#{otheruser.name}"
-					msg.send "Ok so now the keys are with #{otheruser.name}.Take care , don't lose 'em"
-					msg.send k
-				else if users.length >1
-					msg.send getMutltipleUsers users
-				else
+				users = robot.brain.userForName othername
+				if users is null
 					msg.send "I don't know anyone by the name #{othername}"
+				else
+					k = users.name
+					msg.send "Okay, so know the keys are with #{users.name}"	
 
 		robot.brain.set("key",k)			
 
 	robot.respond /(i|I) (have given|gave|had given) (the key|key|keys|a key) to (.+)/i , (msg)->
-		othername = msg.match[3]
+		othername = msg.match[4]
 		name = msg.message.user.name
 		k = key()
 		if othername is 'you'
@@ -85,24 +84,13 @@ module.exports = (robot)->
 		else if othername is robot.name
 			msg.send "That's utter lies! How can you blame a bot to have the keys?"
 		else
-			users = robot.usersForFuzzyName(othername)
-			if users.length is 1
-				otheruser = users[0]
-				flag = 1
-				index = 0
-				for u in k
-					if u is name
-						flag = 0
-						k[index] = "#{otheruser.name}"
-						break
-					index++	
-				if flag is 1
-					k[k.length] = "#{otheruser.name}"
-				msg.send "Ok so now the keys are with #{otheruser.name}.Take care , don't lose 'em"
-			else if users.length > 1
-				msg.send getMutltipleUsers users
-			else
+			users = robot.brain.userForName othername
+			if users is null
 				msg.send "I don't know anyone by the name #{othername}"
+			else
+				k = users.name
+				msg.send "Okay, so know the keys are with #{users.name}"	
+			
 
 		robot.brain.set("key",k)		
 				
