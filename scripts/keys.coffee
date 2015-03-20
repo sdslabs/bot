@@ -96,11 +96,7 @@ module.exports = (robot)->
 				
 	robot.respond /(who|who all) (has|have) (the key|key|keys|a key)/i , (msg)->
 		k = key()
-		msgText = ""
-		for u in k
-			msgText+=u
-			msgText+=" "
-
+		msgText = k
 		if msgText is ""
 			msg.send "Ah!Nobody here informed me about the keys. Don't hold me responsible for this :expressionless:"
 		else
