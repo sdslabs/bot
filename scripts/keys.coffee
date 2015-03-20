@@ -1,93 +1,121 @@
 # Description:
-#   Tell bot if you have lab key so he can give out info about keys when asked
-#
-# Dependencies:
-#   None
-#
-# Configuration:
-#   None
+#   partychat like chat-score/leaderboard script built at 'SDSLabs'
+#   we developed this to use in our 'Slack' team instance
 #
 # Commands:
-#   hubot i have key
-#   hubot i gave key to <name>
-#   hubot i dont have key 
-#   hubot who all have keys
-#   hubot <name> has key
+#   listen for * has/have keys in chat text and displays users with the keys/updates the user having keys
+#   bot who has keys : returns current user having lab keys
+#   bot i have keys : set's the key-holder to the user who posted
+#   bot i dont have keys : unsets the user who posted from key-holders
+#	bot xyz has keys : sets xyz as the holder of keys
+#
+# Examples:
+#   :bot who has keys
+#   :bot i have keys
+#   :bot i dont have keys
+#	:bot who has keys
+#	:bot ravi has keys
 #
 # Author:
-#   Durgesh Suthar
+#   Punit Dhoot (@pdhoot)
+#   Developer at SDSLabs (@sdslabs)
 
-module.exports = (robot) ->
+module.exports = (robot)->
+	getMutltipleUsers  = (users)->
+		"Be more specific. I know #{users.length} people named like that #{(user.name for user in users).join(', ')}"
 
-  getAmbiguousUserText = (users) ->
-    "Be more specific, I know #{users.length} people named like that: #{(user.name for user in users).join(", ")}"
 
-  robot.respond /(who all have|who have|who is having|whos having) (keys|key|a key|the key)/i, (msg) ->
-    messageText = '';
-    users = robot.users()
-    for k, u of users
-        if u.key is 'yes'
-            messageText += "#{u.name}, "
-        else
-            messageText += ""
-    if messageText.trim() is "" then messageText = "Nobody told me about keys."
-    msg.send messageText
+	key = ()->
+		Key = robot.brain.get("key") or []
+		robot.brain.set("key" ,Key)
+		Key	
 
-  robot.respond /i have (a key|key|keys|the key)/i, (msg) ->
-    name = msg.message.user.name
-    user = robot.userForName name
+	
+	robot.respond /i have (a key|the key|key|keys)/i, (msg)->
+		name = msg.message.user.name 
+		user = robot.brain.userForName name
+		k = key()
+		if typeof user is 'object'
+			k[k.length] = "#{name}"
+			msg.send "Okay #{name} has keys"
 
-    if typeof user is 'object'
-      user.key = 'yes'
-      msg.send "okay #{user.name}, Tell me again when you give it to someone"
+		robot.brain.set("key",k)	
 
-  robot.respond /i (don\'t|dont|do not) have (key|keys)/i, (msg) ->
-    name = msg.message.user.name
-    user = robot.userForName name
 
-    if typeof user is 'object'
-      user.key = 'no'
-      msg.send "okay #{user.name}, Got it"
+	robot.respond /i (don\'t'|dont|do not) (has|have) (the key|key|keys|a key)/i , (msg)->
+		name = msg.message.user.name
+		user = robot.brain.userForName name
+		k = key()
+		i = k.indexOf(user)
+		k.splice(i, 1)
+		if typeof user is 'object'
+			msg.send "Okay #{name} doesn't has the keys. Who got the keys then?"
+		robot.brain.set("key",k)	
 
-  robot.respond /i (gave|have given) (key|a key|the key|keys) to (.+)/i, (msg) ->
-    othername = msg.match[3]
-    name = msg.message.user.name
-    user = robot.userForName name
 
-    if othername is "you"
-      msg.send "I never takes keys. #{user.name} is a liar"
-    else if othername is robot.name
-      msg.send "I never takes keys. #{user.name} is a liar"
-    else
-      users = robot.usersForFuzzyName(othername)
-      if users.length is 1
-        otheruser = users[0]
-        otheruser.key = 'yes'
-        if typeof user is 'object'
-          user.key = 'no'
-        msg.send "Okay #{user.name}, Now i will remember #{otheruser.name} "
-      else if users.length > 1
-        msg.send getAmbiguousUserText users
-      else
-        msg.send "#{othername}? Never heard of 'em"
-  
-  robot.respond /(.+) (has|have) (a key|key|keys|the key)/i, (msg) ->
-    othername = msg.match[1]
-    name = msg.message.user.name
-    user = robot.userForName name
+	robot.respond /(.+) (has|have) (the key|key|keys|a key)/i , (msg)->
+		othername = msg.match[1]
+		name = msg.message.user.name
+		k = key()
+		unless othername in ["who", "who all","Who", "Who all" , "i" , "I" , "i don't" , "i dont" , "i do not" , "I don't" , "I dont" , "I do not"]
+			if othername is 'you'
+				msg.send "How am I supposed to take those keys? #{name} is a liar!"
+			else if othername is robot.name
+				msg.send "How am I supposed to take those keys? #{name} is a liar!"
+			else
+				users = robot.brain.usersForFuzzyName(othername)
+				if users.length is 1
+					otheruser = users[0]
+					k[k.length] = "#{otheruser.name}"
+					msg.send "Ok so now the keys are with #{otheruser.name}.Take care , don't lose 'em"
+					msg.send k
+				else if users.length >1
+					msg.send getMutltipleUsers users
+				else
+					msg.send "I don't know anyone by the name #{othername}"
 
-    unless othername in ['','who','who all','whos','i','I','i dont','i don\'t']
-      if othername is "you"
-        msg.send "I never takes keys. #{user.name} is a liar"
-      else if othername is robot.name
-        msg.send "I never takes keys. #{user.name} is a liar"
-      else
-        users = robot.usersForFuzzyName(othername)
-        if users.length is 1
-          otheruser = users[0]
-          otheruser.key = 'yes'
-          msg.send "Thanks #{user.name} for informing me!"
-        else if users.length > 1
-          msg.send getAmbiguousUserText users
-        else
-          msg.send "#{othername}? Never heard of 'em"
+		robot.brain.set("key",k)			
+
+	robot.respond /(i|I) (have given|gave|had given) (the key|key|keys|a key) to (.+)/i , (msg)->
+		othername = msg.match[3]
+		name = msg.message.user.name
+		k = key()
+		if othername is 'you'
+			msg.send "That's utter lies! How can you blame a bot to have the keys?"
+		else if othername is robot.name
+			msg.send "That's utter lies! How can you blame a bot to have the keys?"
+		else
+			users = robot.usersForFuzzyName(othername)
+			if users.length is 1
+				otheruser = users[0]
+				flag = 1
+				index = 0
+				for u in k
+					if u is name
+						flag = 0
+						k[index] = "#{otheruser.name}"
+						break
+					index++	
+				if flag is 1
+					k[k.length] = "#{otheruser.name}"
+				msg.send "Ok so now the keys are with #{otheruser.name}.Take care , don't lose 'em"
+			else if users.length > 1
+				msg.send getMutltipleUsers users
+			else
+				msg.send "I don't know anyone by the name #{othername}"
+
+		robot.brain.set("key",k)		
+				
+	robot.respond /(who|who all) (has|have) (the key|key|keys|a key)/i , (msg)->
+		k = key()
+		msgText = ""
+		for u in k
+			msgText+=u
+			msgText+=" "
+
+		if msgText is ""
+			msg.send "Ah!Nobody here informed me about the keys. Don't hold me responsible for this :expressionless:"
+		else
+			msg.send msgText	
+		robot.brain.set("key" ,k)	
+
