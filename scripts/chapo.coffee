@@ -44,5 +44,19 @@ module.exports = (robot)->
 		for key , value of chapo
 			string+="\n"
 			string+="#{key} for #{value}"
-		msg.send string		
+		if string is "Pending chapos"
+			msg.send "There are no pending chapos"
+		else		
+			msg.send string		
+
+	robot.respond /(.+) gave chapo/i , (msg)->
+		user = msg.match[1]
+		chapo = []
+		chapo = chapoList()
+		if 	chapo[user] 
+			delete chapo[user]
+			msg.send "Hmm.. #{user} fullfils his promises."
+		else
+			msg.send "There was no such pending chapo"		
+
 	
