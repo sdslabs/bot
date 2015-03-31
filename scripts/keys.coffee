@@ -21,9 +21,6 @@
 #   Developer at SDSLabs (@sdslabs)
 
 module.exports = (robot)->
-	getMutltipleUsers  = (users)->
-		"Be more specific. I know #{users.length} people named like that #{(user.name for user in users).join(', ')}"
-
 
 	key = ()->
 		Key = robot.brain.get("key") or ""
@@ -70,7 +67,7 @@ module.exports = (robot)->
 					msg.send "I don't know anyone by the name #{othername}"
 				else
 					k = users.name
-					msg.send "Okay, so know the keys are with #{users.name}"	
+					msg.send "Okay, so now the keys are with #{users.name}"	
 
 		robot.brain.set("key",k)			
 
@@ -88,7 +85,7 @@ module.exports = (robot)->
 				msg.send "I don't know anyone by the name #{othername}"
 			else
 				k = users.name
-				msg.send "Okay, so know the keys are with #{users.name}"	
+				msg.send "Okay, so now the keys are with #{users.name}"	
 			
 
 		robot.brain.set("key",k)		
@@ -97,9 +94,9 @@ module.exports = (robot)->
 		k = key()
 		msgText = k
 		if msgText is ""
-			msg.send "Ah!Nobody here informed me about the keys. Don't hold me responsible for this :expressionless:"
+			msg.send "Ah! Nobody informed me about the keys. Don't hold me responsible for this :expressionless:"
 		else
-			msgText+=" is the one who has the keys"
+			msgText+=" has keys"
 			msg.send msgText	
 		robot.brain.set("key" ,k)	
 
