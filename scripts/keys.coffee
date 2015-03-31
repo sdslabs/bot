@@ -1,4 +1,24 @@
-
+# Description:
+#   partychat like chat-score/leaderboard script built at 'SDSLabs'
+#   we developed this to use in our 'Slack' team instance
+#
+# Commands:
+#   listen for * has/have keys in chat text and displays users with the keys/updates the user having keys
+#   bot who has keys : returns current user having lab keys
+#   bot i have keys : set's the key-holder to the user who posted
+#   bot i dont have keys : unsets the user who posted from key-holders
+#	bot xyz has keys : sets xyz as the holder of keys
+#
+# Examples:
+#   :bot who has keys
+#   :bot i have keys
+#   :bot i dont have keys
+#	:bot who has keys
+#	:bot ravi has keys
+#
+# Author:
+#   Punit Dhoot (@pdhoot)
+#   Developer at SDSLabs (@sdslabs)
 
 module.exports = (robot)->
 	getMutltipleUsers  = (users)->
