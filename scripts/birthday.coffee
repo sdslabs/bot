@@ -15,11 +15,8 @@
 http = require 'http'
 
 module.exports = (robot) ->
-	robot.respond /(akashtest) (.+)$/i, (msg) ->
-	    msg.http(process.env.INFO_SPREADSHEET_URL).get() (err, res, body) ->
-	      response = JSON.parse body 
-	      	msg.send response
-
+	robot.hear /akashdeeptesting/i, (res) ->
+		res.send "I am alive!"
 
 
 
