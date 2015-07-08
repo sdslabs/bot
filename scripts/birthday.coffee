@@ -14,8 +14,13 @@
 
 http = require 'http'
 
+date = 
+
+b_boy = ""
+
 module.exports = (robot) ->
 	robot.hear /Birthdays/i, (res) ->
-		robot.http("https://docs.google.com/document/d/1gMSDADASD/edit").get() (err, resp, body) ->
+		robot.http(process.env.INFO_SPREADSHEET_URL).get() (err, resp, body) ->
       		response = JSON.parse body 
-      		res.send response["version"]
+      		if response["version"]
+      			res.send #{process.env.INFO_SPREADSHEET_URL}			
