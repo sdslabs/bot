@@ -44,6 +44,10 @@ month_difference = 0
 
 date_difference = 0
 
+c_date = ""
+
+c_month = ""
+
 module.exports = (robot) ->
 	robot.hear /Birthdays/i, (res) ->
 		robot.http(process.env.INFO_SPREADSHEET_URL).get() (err, resp, body) ->
@@ -53,7 +57,7 @@ module.exports = (robot) ->
       			if b_person !=""
       				res.send "Happy Birthday #{b_person}!! Turned #{age} today.. Chapo toh banti hai !!!"
       			else
-      				res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}/#{c_month}/#{c_year}"
+      				res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}/#{c_month}"
       		else
       			res.send "Akash is the culprit!! Gave me wrong link"
 
@@ -69,18 +73,22 @@ module.exports = (robot) ->
 				b_person = row.title.$t
 				age = curr_year - year
 				today = true;
-		if today==false
+		if (today==false)
 			month_difference = month - curr_month
-			date_difference = date - curr_date
 			if (month_difference<0)
-				month_difference = -1 * month_difference	
-			if (month_difference < min_month)
+				month_difference = 12 + month - curr_month	
+			if (month_difference <= min_month)
 				min_month = month_difference
-				if (date_difference>0)
-					if(date_difference<min_date)
-						min_date = date_difference
+				if month_difference==0
+					if date>curr_date
+						if date<min_date
+							min_month = month_difference
+							b_nextPerson = row.title.$t
+							c_date = date
+							c_month = month
+				if month_difference==min_month
+					if date<min_date
+						min_month = month_difference
 						b_nextPerson = row.title.$t
 						c_date = date
-						c_month = monsth
-						c_year = year
-
+						c_month = month
