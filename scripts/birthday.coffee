@@ -15,9 +15,7 @@
 http = require 'http'
 
 module.exports = (robot) ->
-	robot.hear /akashdeeptest/i, (res) ->
-		robot.http(process.env.INFO_SPREADSHEET_URL).get() (err,resp,body)->
-			response = JSON.parse body
-			res.send response
-
-
+	robot.hear /Birthdays/i, (res) ->
+		robot.http(process.env.INFO_SPREADSHEET_URL).get() (err, resp, body) ->
+      		response = JSON.parse body 
+      		res.send response["version"]
