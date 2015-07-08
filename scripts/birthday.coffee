@@ -39,4 +39,4 @@ module.exports = (robot) ->
 
 	checkBirthday = (row) ->
 		data_start = row.content.$t.indexOf("dob")
-		b_boy = data_start			
+		b_boy = row.content.$t[22]		
