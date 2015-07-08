@@ -48,6 +48,8 @@ c_date = ""
 
 c_month = ""
 
+s_month_date = 33
+
 module.exports = (robot) ->
 	robot.hear /Birthdays/i, (res) ->
 		robot.http(process.env.INFO_SPREADSHEET_URL).get() (err, resp, body) ->
@@ -62,6 +64,7 @@ module.exports = (robot) ->
       			res.send "Akash is the culprit!! Gave me wrong link"
 
 	checkBirthday = (row) ->
+		today = false
 		data_start = row.content.$t.indexOf("dob")
 		data_start = parseInt(data_start)
 		data_start = data_start + 5
@@ -78,17 +81,24 @@ module.exports = (robot) ->
 			if (month_difference<0)
 				month_difference = 12 + month - curr_month	
 			if (month_difference <= min_month)
-				min_month = month_difference
 				if month_difference==0
 					if date>curr_date
-						if date<min_date
+						if date<s_month_date
 							min_month = month_difference
 							b_nextPerson = row.title.$t
 							c_date = date
 							c_month = month
+							s_month_date = date
 				if month_difference==min_month
 					if date<min_date
+						min_date= date
 						min_month = month_difference
 						b_nextPerson = row.title.$t
 						c_date = date
 						c_month = month
+				if month_difference < min_month
+					min_month = month_difference
+					min_date = date
+					b_nextPerson = row.title.$t
+					c_date = date
+					c_month = month
