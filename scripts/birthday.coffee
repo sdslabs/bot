@@ -30,7 +30,19 @@ curr_date = new Date().getDate()
 
 curr_month = new Date().getMonth() + 1
 
-curr_year = new Date().getFullYear()
+curr_year = new Date().getFullYear
+
+b_nextPerson = ""
+
+today = false
+
+min_month = 14
+
+min_date = 40
+
+month_difference = 0
+
+date_difference = 0
 
 module.exports = (robot) ->
 	robot.hear /Birthdays/i, (res) ->
@@ -41,7 +53,7 @@ module.exports = (robot) ->
       			if b_person !=""
       				res.send "Happy Birthday #{b_person}!! Turned #{age} today.. Chapo toh banti hai !!!"
       			else
-      				res.send "No Birthdays Today!! No Chapos..Focus on work"
+      				res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}/#{c_month}/#{c_year}"
       		else
       			res.send "Akash is the culprit!! Gave me wrong link"
 
@@ -55,4 +67,20 @@ module.exports = (robot) ->
 		if date==curr_date
 			if month==curr_month
 				b_person = row.title.$t
-				age = curr_year - year	
+				age = curr_year - year
+				today = true;
+		if today==false
+			month_difference = month - curr_month
+			date_difference = date - curr_date
+			if (month_difference<0)
+				month_difference = -1 * month_difference	
+			if (month_difference < min_month)
+				min_month = month_difference
+				if (date_difference>0)
+					if(date_difference<min_date)
+						min_date = date_difference
+						b_nextPerson = row.title.$t
+						c_date = date
+						c_month = monsth
+						c_year = year
+
