@@ -50,7 +50,7 @@ s_month_date = 33
 
 out_month=""
 module.exports = (robot) ->
-	robot.hear /Birthdays/i, (res) ->
+	robot.respond /(birthdays|birthday)/i, (res) ->
 		robot.http(process.env.INFO_SPREADSHEET_URL).get() (err, resp, body) ->
       		response = JSON.parse body 
       		if response["version"]
