@@ -23,4 +23,4 @@ module.exports = (robot) ->
 		robot.http(process.env.INFO_SPREADSHEET_URL).get() (err, resp, body) ->
       		response = JSON.parse body 
       		if response["version"]
-      			res.send #{process.env.INFO_SPREADSHEET_URL}			
+      			res.send process.env.INFO_SPREADSHEET_URL
