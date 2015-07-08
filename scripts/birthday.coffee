@@ -14,15 +14,23 @@
 
 http = require 'http'
 
-date = 
+date = ""
 
-b_boy = ""
+month = ""
+
+year = ""
+
+b_person = ""
 
 age = ""
 
 data_start = ""
 
-data_end = ""
+curr_date = new Date().getDate()
+
+curr_month = new Date().getMonth() + 1
+
+curr_year = new Date().getFullYear()
 
 module.exports = (robot) ->
 	robot.hear /Birthdays/i, (res) ->
@@ -30,8 +38,8 @@ module.exports = (robot) ->
       		response = JSON.parse body 
       		if response["version"]
       			check = checkBirthday(row) for row in response.feed.entry
-      			if b_boy !=""
-      				res.send "Happy Birthday #{b_boy}!! Turned #{age} today.. Chapo toh banti hai !!!"
+      			if b_person !=""
+      				res.send "Happy Birthday #{b_person}!! Turned #{age} today.. Chapo toh banti hai !!!"
       			else
       				res.send "No Birthdays Today!! No Chapos..Focus on work"
       		else
@@ -39,4 +47,12 @@ module.exports = (robot) ->
 
 	checkBirthday = (row) ->
 		data_start = row.content.$t.indexOf("dob")
-		b_boy = row.content.$t[22]		
+		data_start = parseInt(data_start)
+		data_start = data_start + 5
+		date = (row.content.$t[data_start]*10 + row.content.$t[data_start+1])
+		month = (row.content.$t[data_start+3]*10 + row.content.$t[data_start+4])
+		year = (row.content.$t[data_start+6]*1000 + row.content.$t[data_start+7]*100 + row.content.$t[data_start+8]*10 + row.content.$t[data_start+9])	
+		if date==curr_date
+			if month==curr_month
+				b_person = row.title.$t
+				age = curr_year - year	
