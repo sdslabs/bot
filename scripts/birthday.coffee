@@ -14,17 +14,15 @@
 
 http = require 'http'
 
-date = ""
+date = 0
 
-month = ""
+month = 0
 
-year = ""
+year = 0
 
 b_person = ""
 
-age = ""
-
-data_start = ""
+data_start = 0
 
 curr_date = new Date().getDate()
 
@@ -44,9 +42,9 @@ month_difference = 0
 
 date_difference = 0
 
-c_date = ""
+c_date = 0
 
-c_month = ""
+c_month = 0
 
 s_month_date = 33
 
@@ -68,9 +66,9 @@ module.exports = (robot) ->
 		data_start = row.content.$t.indexOf("dob")
 		data_start = parseInt(data_start)
 		data_start = data_start + 5
-		date = (row.content.$t[data_start]*10 + row.content.$t[data_start+1])
-		month = (row.content.$t[data_start+3]*10 + row.content.$t[data_start+4])
-		year = (row.content.$t[data_start+6]*1000 + row.content.$t[data_start+7]*100 + row.content.$t[data_start+8]*10 + row.content.$t[data_start+9])	
+		date = (parseInt(row.content.$t[data_start])*10 + parseInt(row.content.$t[data_start+1]))
+		month = (parseInt(row.content.$t[data_start+3])*10 + parseInt(row.content.$t[data_start+4]))
+		year = (parseInt(row.content.$t[data_start+6])*1000 + parseInt(row.content.$t[data_start+7])*100 + parseInt(row.content.$t[data_start+8])*10 + parseInt(row.content.$t[data_start+9]))	
 		if date==curr_date
 			if month==curr_month
 				b_person = row.title.$t
