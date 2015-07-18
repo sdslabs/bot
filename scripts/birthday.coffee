@@ -64,7 +64,6 @@ module.exports = (robot) ->
                         if birthday_today!=false
                               res.send "Happy Birthday #{b_person}!! Turned #{age} today.. Chapo toh banti hai !!!"
                         else
-                              res.send "Value detected False"
                               if(c_date==1||c_date==21||c_date==31)
                                     if(c_month==1)
                                           out_month = "January"
@@ -179,7 +178,11 @@ module.exports = (robot) ->
             data_start = data_start + 5
             date = (parseInt(row.content.$t[data_start])*10 + parseInt(row.content.$t[data_start+1]))
             month = (parseInt(row.content.$t[data_start+3])*10 + parseInt(row.content.$t[data_start+4]))
-            year = (parseInt(row.content.$t[data_start+6])*1000 + parseInt(row.content.$t[data_start+7])*100 + parseInt(row.content.$t[data_start+8])*10 + parseInt(row.content.$t[data_start+9]))    
+            year = (parseInt(row.content.$t[data_start+6])*1000 + parseInt(row.content.$t[data_start+7])*100 + parseInt(row.content.$t[data_start+8])*10 + parseInt(row.content.$t[data_start+9]))
+            res.send date
+            res.send curr_date
+            res.send month
+            res.send curr_month    
             if date==curr_date
                   if month==curr_month    
                         b_person = row.title.$t
