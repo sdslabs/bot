@@ -54,17 +54,14 @@ s_month_date = 33
 
 out_month=""
 
-birthday_today = false
+birthday_today = false;
+
 module.exports = (robot) ->
       robot.respond /(birthdays|birthday)/i, (res) ->
             robot.http(process.env.INFO_SPREADSHEET_URL).get() (err, resp, body) ->
                   response = JSON.parse body 
                   if response["version"]
                         check = checkBirthday(row) for row in response.feed.entry
-                        res.send date
-                        res.send curr_date
-                        res.send month
-                        res.send curr_month  
                         if birthday_today!=false
                               res.send "Happy Birthday #{b_person}!! Turned #{age} today.. Chapo toh banti hai !!!"
                         else
@@ -187,8 +184,8 @@ module.exports = (robot) ->
                   if month==curr_month    
                         b_person = row.title.$t
                         age = curr_year - year
-                        today = true
-                        birthday_today = true
+                        today = true;
+                        birthday_today = true;
             else if (today==false)
                   month_difference = month - curr_month
                   if (month_difference<0)
