@@ -64,6 +64,7 @@ module.exports = (robot) ->
                         if birthday_today!=false
                               res.send "Happy Birthday #{b_person}!! Turned #{age} today.. Chapo toh banti hai !!!"
                         else
+                              res.send "Value detected False"
                               if(c_date==1||c_date==21||c_date==31)
                                     if(c_month==1)
                                           out_month = "January"
