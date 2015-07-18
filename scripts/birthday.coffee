@@ -61,6 +61,10 @@ module.exports = (robot) ->
                   response = JSON.parse body 
                   if response["version"]
                         check = checkBirthday(row) for row in response.feed.entry
+                        res.send date
+                        res.send curr_date
+                        res.send month
+                        res.send curr_month  
                         if birthday_today!=false
                               res.send "Happy Birthday #{b_person}!! Turned #{age} today.. Chapo toh banti hai !!!"
                         else
@@ -178,11 +182,7 @@ module.exports = (robot) ->
             data_start = data_start + 5
             date = (parseInt(row.content.$t[data_start])*10 + parseInt(row.content.$t[data_start+1]))
             month = (parseInt(row.content.$t[data_start+3])*10 + parseInt(row.content.$t[data_start+4]))
-            year = (parseInt(row.content.$t[data_start+6])*1000 + parseInt(row.content.$t[data_start+7])*100 + parseInt(row.content.$t[data_start+8])*10 + parseInt(row.content.$t[data_start+9]))
-            res.send date
-            res.send curr_date
-            res.send month
-            res.send curr_month    
+            year = (parseInt(row.content.$t[data_start+6])*1000 + parseInt(row.content.$t[data_start+7])*100 + parseInt(row.content.$t[data_start+8])*10 + parseInt(row.content.$t[data_start+9]))  
             if date==curr_date
                   if month==curr_month    
                         b_person = row.title.$t
