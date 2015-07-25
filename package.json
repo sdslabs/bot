@@ -8,6 +8,9 @@
     "campfire",
     "bot"
   ],
+  "scripts" : {
+    "postinstall": "npm install hubot-slack-google-auth hubot-slack-gcal"
+  },
   "description": "A simple helpful robot for your Company",
   "licenses": [
     {
