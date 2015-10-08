@@ -3,11 +3,10 @@
 #   we developed this to use in our 'Slack' team instance
 #
 # Commands:
-#   listen for * has/have keys in chat text and displays users with the keys/updates the user having keys
 #   bot who has keys : returns current user having lab keys
 #   bot i have keys : set's the key-holder to the user who posted
 #   bot i dont have keys : unsets the user who posted from key-holders
-#	bot xyz has keys : sets xyz as the holder of keys
+#  	bot xyz has keys : sets xyz as the holder of keys
 #
 # Examples:
 #   :bot who has keys
@@ -25,17 +24,17 @@ module.exports = (robot)->
 	key = ()->
 		Key = robot.brain.get("key") or ""
 		robot.brain.set("key" ,Key)
-		Key	
+		Key
 
-	
+
 	robot.respond /i have (a key|the key|key|keys)/i, (msg)->
-		name = msg.message.user.name 
+		name = msg.message.user.name
 		user = robot.brain.userForName name
 		k = key()
 		if typeof user is 'object'
 			msg.send "Okay #{name} has keys"
 			k = user.name
-		robot.brain.set("key",k)	
+		robot.brain.set("key",k)
 
 
 	robot.respond /i (don\'t|dont|do not) (has|have) (the key|key|keys|a key)/i , (msg)->
@@ -48,8 +47,8 @@ module.exports = (robot)->
 			if k is ""
 				msg.send "Okay #{name} doesn't have keys. Who got the keys then?"
 			else
-				msg.send "Yes , i know buddy, its because #{k} has got the keys"	
-		robot.brain.set("key",k)	
+				msg.send "Yes , i know buddy, its because #{k} has got the keys"
+		robot.brain.set("key",k)
 
 
 	robot.respond /(.+) (has|have) (the key|key|keys|a key)/i , (msg)->
@@ -67,9 +66,9 @@ module.exports = (robot)->
 					msg.send "I don't know anyone by the name #{othername}"
 				else
 					k = users.name
-					msg.send "Okay, so now the keys are with #{users.name}"	
+					msg.send "Okay, so now the keys are with #{users.name}"
 
-		robot.brain.set("key",k)			
+		robot.brain.set("key",k)
 
 	robot.respond /(i|I) (have given|gave|had given) (the key|key|keys|a key|the keys) to (.+)/i , (msg)->
 		othername = msg.match[4]
@@ -85,11 +84,11 @@ module.exports = (robot)->
 				msg.send "I don't know anyone by the name #{othername}"
 			else
 				k = users.name
-				msg.send "Okay, so now the keys are with #{users.name}"	
-			
+				msg.send "Okay, so now the keys are with #{users.name}"
 
-		robot.brain.set("key",k)		
-				
+
+		robot.brain.set("key",k)
+
 	robot.respond /(who|who all) (has|have) (the key|key|keys|a key)/i , (msg)->
 		k = key()
 		msgText = k
@@ -97,6 +96,6 @@ module.exports = (robot)->
 			msg.send "Ah! Nobody informed me about the keys. Don't hold me responsible for this :expressionless:"
 		else
 			msgText+=" has keys"
-			msg.send msgText	
-		robot.brain.set("key" ,k)	
+			msg.send msgText
+		robot.brain.set("key" ,k)
 
