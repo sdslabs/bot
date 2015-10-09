@@ -17,6 +17,7 @@
     "hubot-scripts": "^2.16.2",
     "hubot-shipit": "^0.2.0",
     "hubot-slack": "~2.0.3",
+    "hubot-slack-google-auth": "^0.1.1",
     "shellwords": "^0.1.0"
   },
   "engines": {
