@@ -2,7 +2,6 @@
 #  displays the list of the pending chapos
 #
 # Commands:
-#   listen for 
 #   bot chapo user for reason
 # 	bot show all pending chapos
 #
@@ -46,17 +45,17 @@ module.exports = (robot)->
 			string+="#{key} for #{value}"
 		if string is "Pending chapos"
 			msg.send "There are no pending chapos"
-		else		
-			msg.send string		
+		else
+			msg.send string
 
 	robot.respond /(.+) gave chapo/i , (msg)->
 		user = msg.match[1]
 		chapo = []
 		chapo = chapoList()
-		if 	chapo[user] 
+		if 	chapo[user]
 			delete chapo[user]
 			msg.send "Hmm.. #{user} fullfils his promises."
 		else
-			msg.send "There was no such pending chapo"		
+			msg.send "There was no such pending chapo"
 
-	
+

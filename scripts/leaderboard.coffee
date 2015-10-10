@@ -3,7 +3,7 @@
 #   we developed this to use in our 'Slack' team instance
 #
 # Commands:
-#   listen for keyword++ or keyword-- in chat text and updates score for each
+#   keyword++ : Increase score for keyword
 #   bot score keyword : returns current score of 'keyword'
 #   bot alias abc xyz : sets xyz as an alias of abc
 #   bot unset xyz : unsets alias xyz
@@ -85,7 +85,7 @@ module.exports = (robot) ->
    if aliases[alias]?
       aliases[alias] = ""
       message = "Unset alias " + alias
-   else 	
+   else
      message = alias + " is not an alias"
    message
 
@@ -134,7 +134,7 @@ module.exports = (robot) ->
     name = name.toLowerCase()
     if Aliases[name]?
        name = Aliases[name]
-	
+
     # current score for keyword
     ScoreField[name] = ScoreField[name] or 0
     currentscore = ScoreField[name]
