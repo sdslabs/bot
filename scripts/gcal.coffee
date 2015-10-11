@@ -131,7 +131,7 @@ module.exports = (robot)->
         resource: 
           id: uuid.v1()
           type: 'web_hook'
-          address: 'https://ch-hubot.herokuapp.com/push'
+          address: "#{process.env.HUBOT_URL}/push"
         calendarId: GROUP_CALENDAR
         (err, res)->
           if err
