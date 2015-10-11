@@ -40,13 +40,13 @@ module.exports = (robot)->
     if event.status is "cancelled"
       old_event = _.findWhere general_events, id:event.id
       if old_event
-        text = "#{count}. #{cleanDate old_event.start.dateTime} #{old_event.summary ? 'An Event'} at #{event.location ? 'SDSLabs'} got #{event.status}\n" if count?
+        text = "#{count}. #{cleanDate old_event.start.dateTime} #{old_event.summary ? 'An Event'} at #{event.location ? process.env.HUBOT_SLACK_TEAM} got #{event.status}\n" if count?
         general_events = _.without general_events, old_event
     else
       if new Date(event.start.dateTime) < last_update
         event.reminded = true
       general_events.push event
-      text = "#{count}. #{cleanDate event.start.dateTime} #{event.summary ? 'An Event'} at #{event.location ? 'SDSLabs'} got #{event.status}\n" if count?
+      text = "#{count}. #{cleanDate event.start.dateTime} #{event.summary ? 'An Event'} at #{event.location ? process.env.HUBOT_SLACK_TEAM} got #{event.status}\n" if count?
     return text ? ""
 
   setTimeout func = (token)->
@@ -81,7 +81,7 @@ module.exports = (robot)->
       start_date = new Date event.start.dateTime
       difference = new Date() - start_date + reminder.minutes*60000
       if difference > 0 and not event.reminded
-        text += "#{cleanDate event.start.dateTime} - #{event.summary} at #{event.location ? 'SDSLabs'} within #{reminder.minutes} minutes.\n"
+        text += "#{cleanDate event.start.dateTime} - #{event.summary} at #{event.location ? process.env.HUBOT_SLACK_TEAM} within #{reminder.minutes} minutes.\n"
         event.reminded = true
         flag = true
     robot.emit 'slack.attachment', {channel: SLACK_DEFAULT_CHANNEL, text: text} if flag
