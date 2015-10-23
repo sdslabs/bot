@@ -10,7 +10,7 @@
 #  bot birthday or bot birthdays
 #
 # Source of Data:
-#	Takes data from Google Spreadsheet.
+# Takes data from Google Spreadsheet.
 #
 # Author:
 #   Akashdeep Goel (@akash)
@@ -56,6 +56,9 @@ out_month=""
 
 birthday_today = false;
 
+monthMap = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+
+
 module.exports = (robot) ->
       robot.respond /(birthdays|birthday)/i, (res) ->
             robot.http(process.env.INFO_SPREADSHEET_URL).get() (err, resp, body) ->
@@ -66,109 +69,13 @@ module.exports = (robot) ->
                               res.send "Happy Birthday #{b_person}!! Turned #{age} today.. Chapo toh banti hai !!!"
                         else
                               if(c_date==1||c_date==21||c_date==31)
-                                    if(c_month==1)
-                                          out_month = "January"
-                                    if(c_month==2)
-                                          out_month= "February"
-                                    if(c_month==3)
-                                          out_month = "March"
-                                    if(c_month==4)
-                                          out_month = "April"
-                                    if(c_month==5)
-                                          out_month = "May"
-                                    if(c_month==6)
-                                          out_month = "June"
-                                    if(c_month==7)
-                                          out_month = "July"
-                                    if(c_month==8)
-                                          out_month = "August"
-                                    if(c_month==9)
-                                          out_month = "September"
-                                    if(c_month==10)
-                                          out_month = "October"
-                                    if(c_month==11)
-                                          out_month = "November"
-                                    if(c_month==12)
-                                          out_month = "December"
-                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}st #{out_month}"
+                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}st #{monthMap[c_month-1]}"
                               if(c_date==2||c_date==22)
-                                    if(c_month==1)
-                                          out_month = "January"
-                                    if(c_month==2)
-                                          out_month= "February"
-                                    if(c_month==3)
-                                          out_month = "March"
-                                    if(c_month==4)
-                                          out_month = "April"
-                                    if(c_month==5)
-                                          out_month = "May"
-                                    if(c_month==6)
-                                          out_month = "June"
-                                    if(c_month==7)
-                                          out_month = "July"
-                                    if(c_month==8)
-                                          out_month = "August"
-                                    if(c_month==9)
-                                          out_month = "September"
-                                    if(c_month==10)
-                                          out_month = "October"
-                                    if(c_month==11)
-                                          out_month = "November"
-                                    if(c_month==12)
-                                          out_month = "December"
-                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}nd #{out_month}"
+                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}nd #{monthMap[c_month-1]}"
                               if(c_date==3||c_date==23)
-                                    if(c_month==1)
-                                          out_month = "January"
-                                    if(c_month==2)
-                                          out_month= "February"
-                                    if(c_month==3)
-                                          out_month = "March"
-                                    if(c_month==4)
-                                          out_month = "April"
-                                    if(c_month==5)
-                                          out_month = "May"
-                                    if(c_month==6)
-                                          out_month = "June"
-                                    if(c_month==7)
-                                          out_month = "July"
-                                    if(c_month==8)
-                                          out_month = "August"
-                                    if(c_month==9)
-                                          out_month = "September"
-                                    if(c_month==10)
-                                          out_month = "October"
-                                    if(c_month==11)
-                                          out_month = "November"
-                                    if(c_month==12)
-                                          out_month = "December"
-                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}rd #{out_month}"
+                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}rd #{monthMap[c_month-1]}"
                               if(c_date!=1&&c_date!=2&&c_date!=3&&c_date!=21&&c_date!=22&&c_date!=23&&c_date!=31)
-                                    if(c_month==1)
-                                          out_month = "January"
-                                    if(c_month==2)
-                                          out_month= "February"
-                                    if(c_month==3)
-                                          out_month = "March"
-                                    if(c_month==4)
-                                          out_month = "April"
-                                    if(c_month==5)
-                                          out_month = "May"
-                                    if(c_month==6)
-                                          out_month = "June"
-                                    if(c_month==7)
-                                          out_month = "July"
-                                    if(c_month==8)
-                                          out_month = "August"
-                                    if(c_month==9)
-                                          out_month = "September"
-                                    if(c_month==10)
-                                          out_month = "October"
-                                    if(c_month==11)
-                                          out_month = "November"
-                                    if(c_month==12)
-                                          out_month = "December"
-                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}th #{out_month}"
+                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}th #{monthMap[c_month-1]}"
                   else
                         res.send "Akash is the culprit!! Gave me wrong link"
 
