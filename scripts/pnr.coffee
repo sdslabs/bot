@@ -9,15 +9,15 @@
 # Made during Bloom Filter
 #
 # Commands:
-#   bot addpnr <userName> <pnr_number> - Adds this pnr to tracking list
+#   bot add pnr <userName> <pnr_number> - Adds this pnr to tracking list
 #   bot pnrstatus <userName> - Shows status of all pnr numbers for a user
-#   bot stoptrack <userName> <pnr> - stops tracking specified pnr
+#   bot stoptrack <userName> <pnr> - stops tracking specified
 
 module.exports = (robot)->
   getAmbiguousUserText = (users) ->
     "Be more specific, I know #{users.length} people named like that: #{(user.name for user in users).join(", ")}"
 
-  robot.respond /addpnr @?([\w .\-_]+) (.+)/i , (msg)->
+  robot.respond /add ?pnr @?([\w .\-_]+) (.+)/i , (msg)->
     name    = msg.match[1].trim()
     pnrNumber = msg.match[2]
     users = robot.brain.usersForFuzzyName(name)
@@ -32,28 +32,28 @@ module.exports = (robot)->
     else
       msg.send "I don't know anything about #{name}."
   
-  robot.respond /pnrstatus (.+)/i , (msg)->
+  robot.respond /pnr ?status (.+)/i , (msg)->
     name = msg.match[1]
     users = robot.brain.usersForFuzzyName(name)
     if users.length is 1
       user = users[0]
       user.pnr = user.pnr or [ ]
       if user.pnr.length > 0
+        msg.send "Status of your PNRs\n"
         for pnrNum in user.pnr
           http = require 'http'
           url = "http://api.railwayapi.com/pnr_status/pnr/#{pnrNum}/apikey/ubvkp5258/"
           http.get url, (res) ->
             res.on 'data', (chunk) ->
               body  = JSON.parse(chunk)
-              string = "Status of Your PNRs"
-              string+="\n"
+              string = ""
               string+="Train name: #{body['train_name']}\n"
               string+="Chart Prepared: #{body['chart_prepared']}\n"
               for pass in body.passengers
                 string+="Passenger No: #{pass.no} -- Status: #{pass.current_status}\n"
               msg.send string
       else
-        msg.send "#{name} is nothing to me."
+        msg.send "You never gave me a PNR to track!"
     else if users.length > 1
       msg.send getAmbiguousUserText users
     else
