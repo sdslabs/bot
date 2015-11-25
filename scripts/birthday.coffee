@@ -10,7 +10,7 @@
 #  bot birthday or bot birthdays
 #
 # Source of Data:
-# Takes data from Google Spreadsheet.
+#     Takes data from Google Spreadsheet.
 #
 # Author:
 #   Akashdeep Goel (@akash)
@@ -24,7 +24,7 @@ month = 0
 
 year = 0
 
-b_person = ""
+age = ""
 
 data_start = 0
 
@@ -54,33 +54,70 @@ s_month_date = 33
 
 out_month=""
 
-birthday_today = false;
-
 monthMap = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 
-
+birthdayTrack = null
 module.exports = (robot) ->
       robot.respond /(birthdays|birthday)/i, (res) ->
-            robot.http(process.env.INFO_SPREADSHEET_URL).get() (err, resp, body) ->
-                  response = JSON.parse body
-                  if response["version"]
-                        check = checkBirthday(row) for row in response.feed.entry
-                        if birthday_today!=false
-                              res.send "Happy Birthday #{b_person}!! Turned #{age} today.. Chapo toh banti hai !!!"
+            if birthdayTrack
+                  min_date = 40
+                  min_month = 14
+                  s_month_date = 33
+                  today = false
+                  robot.http(process.env.INFO_SPREADSHEET_URL).get() (err, resp, body) ->
+                        response = JSON.parse body
+                        if response["version"]
+                              for row in response.feed.entry
+                                    checkBirthday(row)
+                              if today is true
+                                    res.send "Happy Birthday #{b_nextPerson}!! Turned #{age} today.. Chapo toh banti hai !!!"
+                              else
+                                    if(c_date==1||c_date==21||c_date==31)
+                                          res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}st #{monthMap[c_month-1]}"
+                                    if(c_date==2||c_date==22)
+                                          res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}nd #{monthMap[c_month-1]}"
+                                    if(c_date==3||c_date==23)
+                                          res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}rd #{monthMap[c_month-1]}"
+                                    if(c_date!=1&&c_date!=2&&c_date!=3&&c_date!=21&&c_date!=22&&c_date!=23&&c_date!=31)
+                                          res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}th #{monthMap[c_month-1]}"
                         else
-                              if(c_date==1||c_date==21||c_date==31)
-                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}st #{monthMap[c_month-1]}"
-                              if(c_date==2||c_date==22)
-                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}nd #{monthMap[c_month-1]}"
-                              if(c_date==3||c_date==23)
-                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}rd #{monthMap[c_month-1]}"
-                              if(c_date!=1&&c_date!=2&&c_date!=3&&c_date!=21&&c_date!=22&&c_date!=23&&c_date!=31)
-                                    res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}th #{monthMap[c_month-1]}"
-                  else
-                        res.send "Akash is the culprit!! Gave me wrong link"
+                              res.send "Akash is the culprit!! Gave me wrong link"
+                  return
+            birthdayTrack = setInterval () ->
+                  min_date = 40
+                  min_month = 14
+                  s_month_date = 33
+                  today = false
+                  robot.http(process.env.INFO_SPREADSHEET_URL).get() (err, resp, body) ->
+                        response = JSON.parse body
+                        if response["version"]
+                              for row in response.feed.entry
+                                    checkBirthday(row)
+                              if today is true
+                                    res.send "Happy Birthday #{b_nextPerson}!! Turned #{age} today.. Chapo toh banti hai !!!"
+                              else
+                                    if(c_date==1||c_date==21||c_date==31)
+                                          res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}st #{monthMap[c_month-1]}"
+                                    if(c_date==2||c_date==22)
+                                          res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}nd #{monthMap[c_month-1]}"
+                                    if(c_date==3||c_date==23)
+                                          res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}rd #{monthMap[c_month-1]}"
+                                    if(c_date!=1&&c_date!=2&&c_date!=3&&c_date!=21&&c_date!=22&&c_date!=23&&c_date!=31)
+                                          res.send "Next is #{b_nextPerson}\'s birthday on #{c_date}th #{monthMap[c_month-1]}"
+                        else
+                              res.send "Akash is the culprit!! Gave me wrong link"
+            , 86400000
+
+      robot.respond /stop/, (res) ->
+            if birthdayTrack
+                  res.send "Not tracking Birthdays!"
+                  clearInterval(birthdayTrack) ->
+                  birthdayTrack = null
+            else
+                  res.send "Not annoying you right now, am I?"
 
       checkBirthday = (row) ->
-            today = false
+            sendobj = []
             data_start = row.content.$t.indexOf("dob")
             data_start = parseInt(data_start)
             data_start = data_start + 5
@@ -89,15 +126,14 @@ module.exports = (robot) ->
             year = (parseInt(row.content.$t[data_start+6])*1000 + parseInt(row.content.$t[data_start+7])*100 + parseInt(row.content.$t[data_start+8])*10 + parseInt(row.content.$t[data_start+9]))
             if date==curr_date
                   if month==curr_month
-                        b_person = row.title.$t
+                        today = true
+                        b_nextPerson = row.title.$t
                         age = curr_year - year
-                        today = true;
-                        birthday_today = true;
             else if (today==false)
                   month_difference = month - curr_month
-                  if (month_difference<0)
-                        month_difference = 12 + month - curr_month
-                  if (month_difference <= min_month)
+                  if month_difference<0
+                        month_difference = 12 + month_difference
+                  if month_difference<=min_month
                         if month_difference==0
                               if date>curr_date
                                     if date<s_month_date
@@ -106,16 +142,16 @@ module.exports = (robot) ->
                                           c_date = date
                                           c_month = month
                                           s_month_date = date
-                        if month_difference==min_month
+                        else if month_difference==min_month
                               if date<min_date
                                     min_date= date
-                                    min_month = month_difference
                                     b_nextPerson = row.title.$t
                                     c_date = date
                                     c_month = month
-                        if month_difference < min_month
+                        else if month_difference < min_month
                               min_month = month_difference
                               min_date = date
                               b_nextPerson = row.title.$t
                               c_date = date
                               c_month = month
+                        else
