@@ -15,7 +15,7 @@
 
 
 module.exports = (robot) ->
-  robot.hear /toss/i, (res) ->
+  robot.respond /toss/i, (res) ->
     outcome = ['Heads','Tails']
     res.send res.random outcome
     
