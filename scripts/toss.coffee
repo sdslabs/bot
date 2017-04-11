@@ -1,6 +1,6 @@
 # Description:
 # Returns either Heads or Tails
-# 
+#
 # Dependencies:
 #   None
 #
@@ -15,7 +15,6 @@
 
 
 module.exports = (robot) ->
-  robot.hear /toss/i, (res) ->
-    outcome = ['Heads','Tails']
+  robot.respond /toss/i, (res) ->
+    outcome = [':head:\nHeads', ':tails:\nTails']
     res.send res.random outcome
-    
