@@ -16,5 +16,5 @@
 
 module.exports = (robot) ->
   robot.respond /toss/i, (res) ->
-    outcome = [':head:\nHeads', ':tails:\nTails']
+    outcome = [':heads:\nHeads', ':tails:\nTails']
     res.send res.random outcome
