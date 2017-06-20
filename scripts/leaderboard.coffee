@@ -91,7 +91,7 @@ module.exports = (robot) ->
 
   # checks if name is a valid nick
   verifyName = (name) ->
-    if robot.name.userForName name is null
+    if robot.brain.userForName name is null
       return false
     true
 
