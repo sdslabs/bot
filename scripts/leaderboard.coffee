@@ -89,11 +89,18 @@ module.exports = (robot) ->
      message = alias + " is not an alias"
    message
 
+  # checks if name is a valid nick
+  verifyName = (name) ->
+    if robot.name.userForName name is null
+      return false
+    true
+
   # listen for any [word](++/--) in chat and react/update score
   robot.hear /[a-zA-Z0-9\-_]+(\-\-|\+\+)/gi, (msg) ->
 
     # message for score update that bot will return
     oldmsg = msg.message.text
+    recvmsg = oldmsg
 
     # data-store object
     ScoreField = scorefield()
@@ -107,6 +114,9 @@ module.exports = (robot) ->
     for i in [0...msg.match.length]
       testword = msg.match[i]
 
+      if !verifyName(testword)
+        continue;
+
       # updates Scoring for words, accordingly and returns result string
       result = updateScore(testword, ScoreField, Aliases)
 
@@ -119,7 +129,8 @@ module.exports = (robot) ->
       start += newmsg.length
 
     # reply with updated message
-    msg.send "#{oldmsg}"
+    if (oldmsg isnt recvmsg)
+      msg.send "#{oldmsg}"
 
 
   # response for score status of any <keyword>
