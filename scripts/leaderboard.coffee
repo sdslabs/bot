@@ -7,6 +7,8 @@
 #   bot score keyword : returns current score of 'keyword'
 #   bot alias abc xyz : sets xyz as an alias of abc
 #   bot unset xyz : unsets alias xyz
+#   bot debut xyz : add xyz to the leaderboard
+#   bot retire xyz : remove xyz from the leaderboard
 #
 # Examples:
 #   : will update score for each, accordingly :
@@ -89,11 +91,20 @@ module.exports = (robot) ->
      message = alias + " is not an alias"
    message
 
-  # checks if name is a valid nick
-  verifyName = (name) ->
-    if robot.brain.userForName name is null
-      return false
-    true
+  # checks if name is valid for score updation
+  verifyName = (word, field, aliases) ->
+    posRegex = /\+\+/
+    negRegex = /\-\-/
+    if word.indexOf("++")>=0
+      name = word.replace posRegex, ""
+    else
+      name = word.replace nefRegex, ""
+    if aliases[name.toLowerCase()]?
+      name = aliases[name.toLowerCase()]
+
+    if field[name.toLowerCase()]?
+      return true
+    false
 
   # listen for any [word](++/--) in chat and react/update score
   robot.hear /[a-zA-Z0-9\-_]+(\-\-|\+\+)/gi, (msg) ->
@@ -114,7 +125,8 @@ module.exports = (robot) ->
     for i in [0...msg.match.length]
       testword = msg.match[i]
 
-      if !verifyName(testword)
+      #checks if name is valid
+      if !verifyName(testword, ScoreField, Aliases)
         continue;
 
       # updates Scoring for words, accordingly and returns result string
@@ -144,26 +156,55 @@ module.exports = (robot) ->
     name = msg.match[1]
     name = name.toLowerCase()
     if Aliases[name]?
-       name = Aliases[name]
+      name = Aliases[name]
 	
-    # current score for keyword
-    ScoreField[name] = ScoreField[name] or 0
-    currentscore = ScoreField[name]
+    if verifyName(name, ScoreField, Aliases)
+      msg.send "#{name} : #{ScoreField[name]}"
 
-    msg.send "#{name} : #{currentscore}"
-
- # response for setting an alias
+  # response for setting an alias
   robot.respond /alias ([a-zA-Z0-9_]* [a-zA-Z0-9_]*)/i, (msg) ->
-   Aliases = aliases()
-   message = (msg.match[0].split 'alias ')[1].split ' '
-   name = message[0]
-   alias = message[1]
-   response = addAlias(name,alias,Aliases)
-   msg.send response
+    Aliases = aliases()
+    message = (msg.match[0].split 'alias ')[1].split ' '
+    name = message[0]
+    alias = message[1]
+    response = addAlias(name,alias,Aliases)
+    msg.send response
 
- # response for unsetting an alias
+  # response for unsetting an alias
   robot.respond /unset ([a-zA-Z0-9_]*)/i, (msg) ->
-   Aliases = aliases()
-   alias = (msg.match[0].split 'unset ')[1]
-   response = removeAlias(alias,Aliases)
-   msg.send response
+    Aliases = aliases()
+    alias = (msg.match[0].split 'unset ')[1]
+    response = removeAlias(alias,Aliases)
+    msg.send response
+
+  # response for adding to leaderboard
+  robot.respond /debut ([\w\-_]+)/i, (msg) -> 
+    name = msg.match[1]
+    ScoreField = scorefield()
+    Aliases = aliases()
+    if verifyName(name, ScoreField, Aliases)
+      response = "#{name} is already in the game."
+      msg.send response
+    else
+      ScoreField[name] = 0
+      response = "Added #{name} to roster."
+      msg.send response
+    return
+
+  #response for removing from leaderboard
+  robot.respond /retire ([\w\-_]+)/i, (msg) ->
+    name = msg.match[1]
+    ScoreField = scorefield()
+    Aliases = aliases()
+    if verifyName(name, ScoreField, Aliases)
+      if Aliases[name]?
+        name = Aliases[name]
+      delete ScoreField[name]
+      response = "After a brilliant career, #{name} retires."
+      msg.send response
+    else
+      response = "#{name} is not a part of roster."
+      msg.send response
+    return
+
+
