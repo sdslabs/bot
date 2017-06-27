@@ -97,8 +97,8 @@ module.exports = (robot) ->
     negRegex = /\-\-/
     if word.indexOf("++")>=0
       name = word.replace posRegex, ""
-    else
-      name = word.replace nefRegex, ""
+    else if word.indexOf("--")>=0
+      name = word.replace negRegex, ""
     if aliases[name.toLowerCase()]?
       name = aliases[name.toLowerCase()]
 
@@ -203,7 +203,7 @@ module.exports = (robot) ->
       response = "After a brilliant career, #{name} retires."
       msg.send response
     else
-      response = "#{name} is not a part of roster."
+      response = "#{name} is not in roster."
       msg.send response
     return
 
