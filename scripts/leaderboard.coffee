@@ -112,6 +112,7 @@ module.exports = (robot) ->
 
     # message for score update that bot will return
     oldmsg = msg.message.text
+    oldmsg = oldmsg.substr(4)
     recvmsg = oldmsg
 
     # data-store object
