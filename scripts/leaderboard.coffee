@@ -95,6 +95,7 @@ module.exports = (robot) ->
   verifyName = (word, field, aliases) ->
     posRegex = /\+\+/
     negRegex = /\-\-/
+    name = word
     if word.indexOf("++")>=0
       name = word.replace posRegex, ""
     else if word.indexOf("--")>=0
@@ -199,8 +200,8 @@ module.exports = (robot) ->
     if verifyName(name, ScoreField, Aliases)
       if Aliases[name]?
         name = Aliases[name]
+      response = "After a brilliant career, #{name} retires with a score of #{ScoreField[name]}."
       delete ScoreField[name]
-      response = "After a brilliant career, #{name} retires."
       msg.send response
     else
       response = "#{name} is not in roster."
