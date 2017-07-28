@@ -112,16 +112,14 @@ module.exports = (robot) ->
 
     # message for score update that bot will return
     oldmsg = msg.message.text
-    oldmsg = oldmsg.substr(4)
     recvmsg = oldmsg
+    plusCount = 0
+    minusCount = 0
+    currentCount = 0
 
     # data-store object
     ScoreField = scorefield()
     Aliases = aliases()
-
-    # index keeping an eye on position, where next replace will be
-    start = 0
-    end = 0
 
     # for each ++/--
     for i in [0...msg.match.length]
@@ -133,14 +131,25 @@ module.exports = (robot) ->
 
       # updates Scoring for words, accordingly and returns result string
       result = updateScore(testword, ScoreField, Aliases)
+      if testword.indexOf("++") isnt -1
+        plusCount++
+        currentCount = plusCount
+      else
+        minusCount++
+        currentCount = minusCount
 
-      end = start + testword.length
+      # index keeping an eye on starting index of each username++/-- in message
+      start = 0
+      
+      while currentCount--
+        start+=oldmsg.substr(start).indexOf(testword)
+        start+=testword.length
+      start-=testword.length
 
       # generates response message for reply
-      newmsg = "#{testword} [#{result.Response} #{result.Name} now at
- #{result.New}] "
-      oldmsg = oldmsg.substr(0, start) + newmsg + oldmsg.substr(end+1)
-      start += newmsg.length
+      newmsg = "[#{result.Response} #{result.Name} now at #{result.New}]"
+      msg.send "#{start}"
+      oldmsg = oldmsg.substr(0, start+testword.length) + newmsg + oldmsg.substr(start+testword.length)
 
     # reply with updated message
     if (oldmsg isnt recvmsg)
