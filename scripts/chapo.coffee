@@ -28,7 +28,7 @@ module.exports = (robot)->
 		if username is "bot"
 			msg.send "Was that a joke? :unamused"
 		else if user is null
-			msg.send "You can't get a chapo from a virtual user. Please check the uesrname."
+			msg.send "You can't get a chapo from a virtual user. Please check the username."
 		else
 			reason = msg.match[2]
 			chapo = []
