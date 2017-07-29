@@ -102,7 +102,6 @@ module.exports = (robot) ->
       name = word.replace negRegex, ""
     if aliases[name.toLowerCase()]?
       name = aliases[name.toLowerCase()]
-
     if field[name.toLowerCase()]?
       return true
     false
@@ -113,8 +112,8 @@ module.exports = (robot) ->
     # message for score update that bot will return
     oldmsg = msg.message.text
     recvmsg = oldmsg
-    plusCount = 0
-    minusCount = 0
+    plusCount = {}
+    minusCount = {}
     currentCount = 0
 
     # data-store object
@@ -124,6 +123,7 @@ module.exports = (robot) ->
     # for each ++/--
     for i in [0...msg.match.length]
       testword = msg.match[i]
+      username = testword.substr(0, testword.length-2)
 
       #checks if name is valid
       if !verifyName(testword, ScoreField, Aliases)
@@ -132,20 +132,26 @@ module.exports = (robot) ->
       # updates Scoring for words, accordingly and returns result string
       result = updateScore(testword, ScoreField, Aliases)
       if testword.indexOf("++") isnt -1
-        plusCount++
-        currentCount = plusCount
+        if plusCount[username]?
+          plusCount[username]++
+        else
+          plusCount[username] = 1
+        currentCount = plusCount[username]
       else
-        minusCount++
-        currentCount = minusCount
+        if minusCount[username]?
+          minusCount[username]++
+        else
+          minusCount[username] = 1
+        currentCount = minusCount[username]
 
       # index keeping an eye on starting index of each username++/-- in message
       start = 0
-      
+    
       while currentCount--
         start+=oldmsg.substr(start).indexOf(testword)
         start+=testword.length
       start-=testword.length
-
+      
       # generates response message for reply
       newmsg = "[#{result.Response} #{result.Name} now at #{result.New}]"
       oldmsg = oldmsg.substr(0, start+testword.length) + newmsg + oldmsg.substr(start+testword.length)
