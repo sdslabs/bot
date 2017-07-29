@@ -148,7 +148,6 @@ module.exports = (robot) ->
 
       # generates response message for reply
       newmsg = "[#{result.Response} #{result.Name} now at #{result.New}]"
-      msg.send "#{start}"
       oldmsg = oldmsg.substr(0, start+testword.length) + newmsg + oldmsg.substr(start+testword.length)
 
     # reply with updated message
