@@ -224,3 +224,8 @@ module.exports = (robot) ->
     return
 
 
+  robot.on 'plusplus', (event) ->
+    ScoreField = scorefield()
+    result = updateScore("#{event.username}++", ScoreField, aliases())
+    newmsg = "#{event.username}++ [#{result.Response} #{result.Name} now at #{result.New}]"
+    robot.send room: 'general', newmsg
