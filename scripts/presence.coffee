@@ -15,15 +15,17 @@
 
 module.exports = (robot) ->
   robot.respond /who.*lab/i, (msg) ->
+    message = ""
     msg.http("https://presence.sdslabs.co/?control=present").get() (err, res, body) ->
       if body is '[]'
-        msg.send 'No one here to give me company.'
+        meassage += 'No one here to give me company.'
       else
         data = JSON.parse(body)
         if data.length is 1
-          msg.send 'I sense 1 human in lab.'
+          message += 'I sense 1 human in lab.\n'
         else
-          msg.send 'I sense '+data.length+' humans in lab.'
+          message += 'I sense ' + data.length + ' humans in lab.\n'
         for i of data
-          msg.send data[i].name.split(' ')[0]
-      msg.send "Here's a pic: https://presence.sdslabs.co/spycam.png?q="+Math.random()
+          message += data[i].name + "\n"
+      message += "Here's a pic: https://presence.sdslabs.co/spycam.png?q=" + Math.random()
+      msg.send message
