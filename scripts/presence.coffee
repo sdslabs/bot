@@ -26,6 +26,6 @@ module.exports = (robot) ->
         else
           message+='I sense '+data.length+' humans in lab.\n'
         for i of data
-          message+=data[i].name+="\n";
+          message+=data[i].name+"\n"
       message+="Here's a pic: https://presence.sdslabs.co/spycam.png?q="+Math.random()
       msg.send message
