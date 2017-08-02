@@ -24,7 +24,7 @@ module.exports = (robot) ->
         if data.length is 1
           message += 'I sense 1 human in lab.\n'
         else
-          message += 'I sense '+data.length+' humans in lab.\n'
+          message += 'I sense ' + data.length + ' humans in lab.\n'
         for i of data
           message += data[i].name + "\n"
       message += "Here's a pic: https://presence.sdslabs.co/spycam.png?q=" + Math.random()
