@@ -21,6 +21,6 @@
     "node-cron": "^1.1.2"
   },
   "engines": {
-    "node": "0.10.x"
+    "node": "8.2.x"
   }
 }
