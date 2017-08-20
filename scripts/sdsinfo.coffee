@@ -17,7 +17,7 @@ module.exports = (robot) ->
       response = JSON.parse body 
       details = -1
       if response["version"]
-        reply = sendTheMsg(row) for row in response.feed.entry
+        sendTheMsg(row) for row in response.feed.entry
         if details != -1
           msg.send details
         else
