@@ -50,13 +50,8 @@ module.exports = (robot) ->
     currMsgRecord = sorted[0][1]
     msg = "This week's top poster is @#{name}"
     msg += " with #{currMsgRecord} messages"
-    record = robot.brain.get("msg_record") or ["", 0]
-    prevMsgRecord = record[1]
     robot.send room: 'general', msg
-    if prevMsgRecord < currMsgRecord
-      robot.brain.set("msg_record", sorted[0])
-      robot.send room: 'general', "\n:party: congrats to @#{name} for setting a new record :party:"
-      robot.emit "plusplus", {username: name}
+    robot.emit "plusplus", {username: name}
     for own key, user of robot.brain.data.users
       if user.msgcount>0
         user.msgcount = 0
