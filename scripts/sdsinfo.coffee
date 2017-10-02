@@ -17,16 +17,20 @@ module.exports = (robot) ->
       response = JSON.parse body 
       details = -1
       if response["version"]
-       reply = sendTheMsg(row) for row in response.feed.entry
-       if details != -1
-        msg.send details
-       else 
-        msg.send "User Not found"
+        sendTheMsg(row) for row in response.feed.entry
+        if details != -1
+          msg.send details
+        else
+          msg.send "User Not found"
       else
-       msg.send "Error"
+        msg.send "Error"
 
   sendTheMsg = (row) ->
-       if (row.title.$t.toLowerCase().indexOf(username.toLowerCase())>=0)
-        details = row.content.$t
-       if username == "bot"
+      if (row.title.$t.toLowerCase().indexOf(username.toLowerCase())>=0)
+        if (details == -1)
+          details = row.content.$t
+        else
+          details += "\n"
+          details += row.content.$t
+      if username == "bot"
         details = "That could be Nemo, Yoda or OMGAarti" 
