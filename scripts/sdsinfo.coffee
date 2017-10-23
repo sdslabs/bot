@@ -16,43 +16,42 @@ module.exports = (robot) ->
     msg.http(process.env.INFO_SPREADSHEET_URL).get() (err, res, body) ->
       members = parse body, query
       if members.length > 0 
-        msg.send members.length+" user(s) found matching `"+query.toString()+"`"
-        sendAsSlackAttachment user, msg for user in members
+        msg.send "#{members.length} user(s) found matching `#{query.toString()}`"
+        attachments = []
+        attachments.push createAttachment user for user in members
+        robot.emit 'attachment', 
+          msg: msg.message
+          attachments: attachments
       else
         if query is "bot"
           msg.send "That could be Nemo, Yoda or OMGAarti"
         else
-          msg.send "I could not find a user matching `"+query.toString()+"`"
+          msg.send "I could not find a user matching `#{query.toString()}`"
 
-  sendAsSlackAttachment = (user, msg) ->
+  createAttachment = (user) ->
     body = "Address: #{user[8]}"
     if user[7].length > 0
       body += "\nWebmail: #{user[7]}"
     if user[9].length > 0
       body += "\nCurrent Occupation: #{user[9]}"
-    msg.send(
-      attachments: [
-        {
-          "fallback": user.join ' \t '
-          "color": randomColor()
-          "title": user[0]
-          "text": body
-          "fields": [
-              "title": "Mobile"
-              "value": "<tel:#{user[3]}|#{user[3]}>"
-              "short": true
-            ,
-              "title": "Email"
-              "value": "<mailto:#{user[4]}|#{user[4]}>"
-              "short": true
-            ,
-          ]
-          "footer": "#{user[6]} #{user[5]} (#{user[1]})"
-          "ts": moment(user[2], 'DD/MM/YYYY').format("X")
-        }
+    attachment =
+      "fallback": user.join ' \t '
+      "color": randomColor()
+      "title": user[0]
+      "text": body
+      "fields": [
+          "title": "Mobile"
+          "value": "<tel:#{user[3]}|#{user[3]}>"
+          "short": true
+        ,
+          "title": "Email"
+          "value": "<mailto:#{user[4]}|#{user[4]}>"
+          "short": true
+        ,
       ]
-    )
-
+      "footer": "#{user[6]} #{user[5]} (#{user[1]})"
+      "ts": moment(user[2], 'DD/MM/YYYY').format("X")
+  
   parse = (json, query) ->
     members = []
     for line in json.toString().split '\n'
