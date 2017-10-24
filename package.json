@@ -18,7 +18,8 @@
     "hubot-shipit": "^0.2.0",
     "hubot-slack": "~2.0.3",
     "shellwords": "^0.1.0",
-    "node-cron": "^1.1.2"
+    "node-cron": "^1.1.2",
+    "moment": "^2.18.1"
   },
   "engines": {
     "node": "8.2.x"
