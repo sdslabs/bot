@@ -52,9 +52,11 @@ module.exports = (robot) ->
       "footer": "#{user[6]} #{user[5]} (#{user[1]})"
       "ts": moment(user[2], 'DD/MM/YYYY').format("X")
   
-  parse = (json, query) ->
+  parse = (csv, query) ->
     members = []
-    for line in json.toString().split '\n'
+    lines = csv.toString().split '\n'
+    lines.shift()
+    for line in lines
       y = line.toLowerCase().indexOf query
       if y > -1
         members.push line.split(',').map Function.prototype.call, String.prototype.trim
