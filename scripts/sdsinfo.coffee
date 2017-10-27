@@ -15,12 +15,11 @@ module.exports = (robot) ->
     query = msg.match[2].toLowerCase()
     msg.http(process.env.INFO_SPREADSHEET_URL).get() (err, res, body) ->
       members = parse body, query
-      if members.length > 0 
+      if members.length > 0
         msg.send "#{members.length} user(s) found matching `#{query.toString()}`"
         attachments = []
         attachments.push createAttachment user for user in members
-        robot.emit 'attachment', 
-          msg: msg.message
+        msg.send
           attachments: attachments
       else
         if query is "bot"
@@ -51,7 +50,7 @@ module.exports = (robot) ->
       ]
       "footer": "#{user[6]} #{user[5]} (#{user[1]})"
       "ts": moment(user[2], 'DD/MM/YYYY').format("X")
-  
+
   parse = (csv, query) ->
     members = []
     lines = csv.toString().split '\n'
