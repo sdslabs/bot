@@ -41,3 +41,14 @@ module.exports = (robot) ->
 			2dArray[element1][i] = 2dArray[element2][i]
 			2dArray[element2][i] = temp
 
+
+	parse = (csv, query) ->
+    members = []
+    lines = csv.toString().split '\n'
+    lines.shift()
+    for line in lines
+    	lineArray = line.split ','
+    	if lineArray[6] == query
+    	members.push lineArray[0]
+    members
+
