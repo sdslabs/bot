@@ -20,22 +20,20 @@ module.exports = (robot) ->
     robot.respond /team [\w]* \d/i, (msg) ->
         year = (msg.match[0].split ' ')[2]
         teamSize = parseInt((msg.match[0].split ' ')[3])
-        responseMsg = ""
-        responseMsg = "Possible teams are\n"
         msg.http(process.env.INFO_SPREADSHEET_URL).get() (err, res, body) ->
             members = parse body, year
             if members.length > 0
+                responseMsg = "Possible teams are:\n"
                 sort members
-                i = 0
-                count = 0
-                while i < members.length
-                    if count % teamSize == 0
-                        responseMsg += '\n'
-                        responseMsg = responseMsg + (count/teamSize + 1) + '. '
-                    responseMsg = responseMsg + members[i] + ', '
-                    count++
-                    i++
-                responseMsg += "\n\nask me again for different combinations!"
+                assignedMembers = 0
+                while assignedMembers < members.length
+                    if assignedMembers % teamSize == 0
+                        append = '\n' + (assignedMembers/teamSize + 1) + '. '
+                    else
+                        append = ', '
+                    responseMsg = responseMsg + append + members[assignedMembers]
+                    assignedMembers++
+                responseMsg += "\n\nAsk me again for different combinations!"
                 msg.send responseMsg
 
     # Fisher-Yates algorithm to shuffle array(cool)
