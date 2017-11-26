@@ -1,9 +1,9 @@
 module.exports = (robot) ->
-    robot.respond /team [1-5] \d/i, (msg) ->
+    robot.respond /team [\w]* \d/i, (msg) ->
         year = (msg.match[0].split ' ')[2]
         teamSize = parseInt((msg.match[0].split ' ')[3])
         responseMsg = ""
-        responseMsg += "Possible clustering is\n"
+        responseMsg += "Possible teams are\n"
         msg.http(process.env.INFO_SPREADSHEET_URL).get() (err, res, body) ->
             members = parse body, year
             if members.length > 0
@@ -20,7 +20,7 @@ module.exports = (robot) ->
                     if j % teamSize == 0
                         responseMsg += '\n'
                     i++
-                    
+
                 msg.send responseMsg
 
     sort = (unsorted2dArray, size) ->
