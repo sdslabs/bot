@@ -42,6 +42,7 @@ module.exports = (robot) ->
                 responseMsg += "\n\nask me again for different combinations!"
                 msg.send responseMsg
 
+    # sorts the 2D array containing names according to corresponding randomly generated weights
     sort = (unsorted2dArray, size) ->
         start = 0
         while start < size
@@ -56,12 +57,14 @@ module.exports = (robot) ->
             swap unsorted2dArray, start, index
             start++
 
+    # a simple swap function
     swap = (array2D, element1, element2) ->
         for i in [0..1]
             temp = array2D[element1][i]
             array2D[element1][i] = array2D[element2][i]
             array2D[element2][i] = temp
 
+    # returns array containing names of requested year
     parse = (csv, query) ->
         members = []
         lines = csv.toString().split '\n'
