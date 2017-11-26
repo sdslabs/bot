@@ -13,14 +13,14 @@ module.exports = (robot) ->
                     membersArray.push [member, random]
                 sort membersArray, members.length
                 i = 0
-                j = 0
+                count = 0
                 while i < members.length
-                    responseMsg = responseMsg + membersArray[i][0] + ', '
-                    j++
-                    if j % teamSize == 0
+                    if count % teamSize == 0
                         responseMsg += '\n'
+                        responseMsg = responseMsg + (count/teamSize + 1) + '. '
+                    responseMsg = responseMsg + membersArray[i][0] + ', '
+                    count++
                     i++
-
                 msg.send responseMsg
 
     sort = (unsorted2dArray, size) ->
