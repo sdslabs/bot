@@ -39,6 +39,7 @@ module.exports = (robot) ->
                     responseMsg = responseMsg + membersArray[i][0] + ', '
                     count++
                     i++
+                responseMsg += "\n\nask me again for different combinations!"
                 msg.send responseMsg
 
     sort = (unsorted2dArray, size) ->
