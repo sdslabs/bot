@@ -7,10 +7,7 @@
 #   INFO_SPREADSHEET_URL   
 #
 # Commands:
-#   listen for
-#   bot team [m] [n]
-#   [m] = year
-#   [n] = team size
+#   bot team [year] [team size] : make teams of specified size(if possible) randomly from members of specified year 
 #
 # Author:
 #   Nikhil Kaushik (@c0dzilla)
