@@ -9,6 +9,10 @@
 # Commands:
 #   bot team [year] [team size] : make teams of specified size(if possible) randomly from members of specified year 
 #
+# Examples:
+#   bot team alumni 3
+#   bot team 2 4
+#
 # Author:
 #   Nikhil Kaushik (@c0dzilla)
 #   Developer at SDSLabs (@sdslabs)
