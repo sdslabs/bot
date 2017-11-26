@@ -1,3 +1,21 @@
+# Description:
+#   cluster lab members of a particular year randomly
+#   year and team size is mentioned in the command
+#   useful to randomly form teams in internal hackathons
+#
+# Configuration:
+#   INFO_SPREADSHEET_URL   
+#
+# Commands:
+#   listen for
+#   bot team [m] [n]
+#   [m] = year
+#   [n] = team size
+#
+# Author:
+#   Nikhil Kaushik (@codzilla)
+#   Developer at SDSLabs (@sdslabs)
+
 module.exports = (robot) ->
     robot.respond /team [\w]* \d/i, (msg) ->
         year = (msg.match[0].split ' ')[2]
