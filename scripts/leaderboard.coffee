@@ -60,7 +60,8 @@ module.exports = (robot) ->
       name = word.replace negRegex, ""
       if aliases[name.toLowerCase()]?
         name = aliases[name.toLowerCase()]
-      field[name.toLowerCase()] = lastScore(name, field) - 1
+      if field[name.toLowerCase()] >= 1
+        field[name.toLowerCase()] = lastScore(name, field) - 1
       response = "ouch!"
 
     newscore = field[name.toLowerCase()]
@@ -87,7 +88,7 @@ module.exports = (robot) ->
    if aliases[alias]?
       aliases[alias] = ""
       message = "Unset alias " + alias
-   else 	
+   else
      message = alias + " is not an alias"
    message
 
@@ -96,9 +97,9 @@ module.exports = (robot) ->
     posRegex = /\+\+/
     negRegex = /\-\-/
     name = word
-    if word.indexOf("++")>=0
+    if word.indexOf("++") >= 0
       name = word.replace posRegex, ""
-    else if word.indexOf("--")>=0
+    else if word.indexOf("--") >= 0
       name = word.replace negRegex, ""
     if aliases[name.toLowerCase()]?
       name = aliases[name.toLowerCase()]
@@ -173,7 +174,7 @@ module.exports = (robot) ->
     name = name.toLowerCase()
     if Aliases[name]?
       name = Aliases[name]
-	
+
     if verifyName(name, ScoreField, Aliases)
       msg.send "#{name} : #{ScoreField[name]}"
 
@@ -202,7 +203,7 @@ module.exports = (robot) ->
       response = "#{name} is already in the game."
       msg.send response
     else
-      ScoreField[name] = 0
+      ScoreField[name.toLowerCase()] = 0
       response = "Added #{name} to roster."
       msg.send response
     return
@@ -215,8 +216,8 @@ module.exports = (robot) ->
     if verifyName(name, ScoreField, Aliases)
       if Aliases[name]?
         name = Aliases[name]
-      response = "After a brilliant career, #{name} retires with a score of #{ScoreField[name]}."
-      delete ScoreField[name]
+      response = "After a brilliant career, #{name} retires with a score of #{ScoreField[name.toLowerCase()]}."
+      delete ScoreField[name.toLowerCase()]
       msg.send response
     else
       response = "#{name} is not in roster."
