@@ -60,8 +60,7 @@ module.exports = (robot) ->
       name = word.replace negRegex, ""
       if aliases[name.toLowerCase()]?
         name = aliases[name.toLowerCase()]
-      if field[name.toLowerCase()] >= 1
-        field[name.toLowerCase()] = lastScore(name, field) - 1
+      field[name.toLowerCase()] = lastScore(name, field) - 1
       response = "ouch!"
 
     newscore = field[name.toLowerCase()]
