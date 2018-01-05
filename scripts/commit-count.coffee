@@ -25,7 +25,7 @@ module.exports = (robot) ->
     robot.brain.set("aliases",Alias)
     Alias
 
-  verfiy = (headers, json) ->
+  verify = (headers, json) ->
     # Ensure that this is a push event and not force pushed
     unless headers['X-GitHub-Event'] is 'push' and json.commits?.length > 0 and not json.forced
       false
