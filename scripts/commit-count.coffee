@@ -27,17 +27,19 @@ module.exports = (robot) ->
 
   verify = (headers, json) ->
     # Ensure that this is a push event and not force pushed
-    unless headers['X-GitHub-Event'] is 'push' and json.commits?.length > 0 and not json.forced
-      false
+    unless headers['x-github-event'] is 'push' and json.commits?.length > 0 and not json.forced
+      return false
 
     # Ensure SHA1 secret is valid
     signature = "sha1=" + crypto.createHmac('sha1', process.env.HUBOT_GITHUB_SECRET).update(new Buffer JSON.stringify json).digest 'hex'
-    unless headers['X-Hub-Signature'] is signature
-      false
+    unless headers['x-hub-signature'] is signature
+      return false
+
+    return true
 
   robot.router.post '/webhook/github/', (req, res) ->
     try
-      robot.logger.info("Github push webhook recieved", req.body)
+      robot.logger.info("Github push webhook recieved")
       headers = req.headers
       json = req.body
       if verify headers, json
