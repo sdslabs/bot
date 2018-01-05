@@ -4,9 +4,10 @@
 #
 # Dependencies:
 #   node-cron
+#   crypto
 #
 # Configuration:
-#   None
+#   HUBOT_GITHUB_SECRET
 #
 # Commands:
 #   hubot commits
@@ -15,6 +16,7 @@
 #   csoni111
 
 cron = require 'node-cron'
+crypto = require 'crypto'
 
 module.exports = (robot) ->
 
@@ -24,7 +26,14 @@ module.exports = (robot) ->
     Alias
 
   verfiy = (headers, json) ->
-    headers['X-GitHub-Event'] is 'push' and json.commits?.length > 0 and not json.forced
+    # Ensure that this is a push event and not force pushed
+    unless headers['X-GitHub-Event'] is 'push' and json.commits?.length > 0 and not json.forced
+      false
+
+    # Ensure SHA1 secret is valid
+    signature = "sha1=" + crypto.createHmac('sha1', process.env.HUBOT_GITHUB_SECRET).update(new Buffer JSON.stringify json).digest 'hex'
+    unless headers['X-Hub-Signature'] is signature
+      false
 
   robot.router.post '/webhook/github/', (req, res) ->
     try
