@@ -33,11 +33,13 @@ module.exports = (robot) ->
     # Ensure SHA1 secret is valid
     signature = "sha1=" + crypto.createHmac('sha1', process.env.HUBOT_GITHUB_SECRET).update(new Buffer JSON.stringify json).digest 'hex'
     unless headers['X-Hub-Signature'] is signature
+      console.log signature, headers['X-Hub-Signature']
       false
 
   robot.router.post '/webhook/github/', (req, res) ->
     try
       robot.logger.info("Github push webhook recieved", req.body)
+      robot.logger.info("Headers", req.headers)
       headers = req.headers
       json = req.body
       if verify headers, json
@@ -46,6 +48,7 @@ module.exports = (robot) ->
           name = c.committer.username
           name = aliases[name] if aliases[name]?
           user = robot.brain.userForName name
+          console.log "user not found" if user == null
           user.commits = ++user.commits or 1 if user?
     catch error
       robot.logger.error "Github webhook listener error: #{error.stack}. Request: #{req.body}"
