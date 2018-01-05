@@ -1,4 +1,4 @@
-bot
+Bot
 ===
 
 bot is our friendly robot that sits on sdslabs chat and helps us in lots of things.
