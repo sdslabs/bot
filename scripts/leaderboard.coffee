@@ -235,7 +235,7 @@ module.exports = (robot) ->
     return
 
   # setting a user's score
-  robot.respond /set score ([\w\-_]+) ([-+]?\d+)/i, (msg) ->
+  robot.respond /set\s+score\s+([\w\-_]+)\s+([-+]?\d+)/i, (msg) ->
     name = msg.match[1].toLowerCase()
     newScore = msg.match[2]
     ScoreField = scorefield()
