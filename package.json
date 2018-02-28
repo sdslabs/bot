@@ -3,25 +3,24 @@
   "version": "0.0.0",
   "private": true,
   "author": "contact@sdslabs.co.in",
-  "description": "A simple helpful robot for your Company",
+  "description": "A simple helpful robot for sdslabs slack channel",
   "dependencies": {
     "bang": "^1.0.4",
-    "hubot": "^2.16.0",
-    "hubot-diagnostics": "0.0.1",
-    "hubot-google-images": "^0.2.2",
-    "hubot-help": "^0.1.1",
-    "hubot-heroku-keepalive": "^1.0.0",
-    "hubot-pugme": "^0.1.0",
-    "hubot-redis-brain": "0.0.3",
-    "hubot-rules": "^0.1.1",
-    "hubot-scripts": "^2.16.2",
-    "hubot-shipit": "^0.2.0",
-    "hubot-slack": "~2.0.3",
-    "shellwords": "^0.1.0",
-    "node-cron": "^1.1.2",
-    "moment": "^2.18.1"
+    "hubot": "^3.0.1",
+    "hubot-diagnostics": "^1.0.0",
+    "hubot-google-images": "^0.2.7",
+    "hubot-help": "^1.0.1",
+    "hubot-heroku-keepalive": "^1.0.3",
+    "hubot-pugme": "^0.1.1",
+    "hubot-rules": "^1.0.0",
+    "hubot-scripts": "^2.17.1",
+    "hubot-shipit": "^0.2.1",
+    "hubot-slack": "^4.4.0",
+    "moment": "^2.19.1",
+    "node-cron": "^1.2.1",
+    "shellwords": "^0.1.1"
   },
   "engines": {
-    "node": "8.2.x"
+    "node": "8.8.x"
   }
 }
