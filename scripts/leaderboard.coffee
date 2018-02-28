@@ -236,16 +236,19 @@ module.exports = (robot) ->
 
   # setting a user's score
   robot.respond /set\s+score\s+([\w\-_]+)\s+([-+]?\d+)/i, (msg) ->
-    name = msg.match[1].toLowerCase()
-    newScore = msg.match[2]
-    ScoreField = scorefield()
-    Aliases = aliases()
-    if verifyName(name, ScoreField, Aliases)
-      response = setScore(ScoreField, Aliases, name, newScore)
-      msg.send response
-    else
-      response = "#{name} is not a member of leaderboard. Add using 'bot debut #{name}'."
-      msg.send response
+    # switch to enable/disable setScore
+    setScoreEnabled = true
+    if setScoreEnabled
+      name = msg.match[1].toLowerCase()
+      newScore = msg.match[2]
+      ScoreField = scorefield()
+      Aliases = aliases()
+      if verifyName(name, ScoreField, Aliases)
+        response = setScore(ScoreField, Aliases, name, newScore)
+        msg.send response
+      else
+        response = "#{name} is not a member of leaderboard. Add using 'bot debut #{name}'."
+        msg.send response
 
 
   robot.on 'plusplus', (event) ->
