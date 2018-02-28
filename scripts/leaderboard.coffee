@@ -71,7 +71,7 @@ module.exports = (robot) ->
     Response: response
 
   # adds a new alias for a name
-  addAlias = (name,alias,aliases) ->
+  addAlias = (name, alias, aliases) ->
     alias = alias.toLowerCase()
     name = name.toLowerCase()
     if !aliases[alias]
@@ -82,7 +82,7 @@ module.exports = (robot) ->
     message
 
   # removes a alias
-  removeAlias = (alias,aliases) ->
+  removeAlias = (alias, aliases) ->
    alias = alias.toLowerCase()
    if aliases[alias]?
       aliases[alias] = ""
@@ -105,6 +105,17 @@ module.exports = (robot) ->
     if field[name.toLowerCase()]?
       return true
     false
+
+    # set a score to given value
+    setScore = (field, aliases, name) ->
+      score = parseInt(score)
+      name = name.toLowerCase()
+      if (aliases[name])
+        name = alias[name]
+      if Number.isNaN(score)
+        field[name] = score
+        return "#{name}'s score set to #{score}."
+      return "Please enter a valid score!"
 
   # listen for any [word](++/--) in chat and react/update score
   robot.hear /[a-zA-Z0-9\-_]+(\-\-|\+\+)/gi, (msg) ->
@@ -146,12 +157,12 @@ module.exports = (robot) ->
 
       # index keeping an eye on starting index of each username++/-- in message
       start = 0
-    
+
       while currentCount--
         start+=oldmsg.substr(start).indexOf(testword)
         start+=testword.length
       start-=testword.length
-      
+
       # generates response message for reply
       newmsg = "[#{result.Response} #{result.Name} now at #{result.New}]"
       oldmsg = oldmsg.substr(0, start+testword.length) + newmsg + oldmsg.substr(start+testword.length)
@@ -194,7 +205,7 @@ module.exports = (robot) ->
     msg.send response
 
   # response for adding to leaderboard
-  robot.respond /debut ([\w\-_]+)/i, (msg) -> 
+  robot.respond /debut ([\w\-_]+)/i, (msg) ->
     name = msg.match[1]
     ScoreField = scorefield()
     Aliases = aliases()
@@ -207,7 +218,7 @@ module.exports = (robot) ->
       msg.send response
     return
 
-  #response for removing from leaderboard
+  # response for removing from leaderboard
   robot.respond /retire ([\w\-_]+)/i, (msg) ->
     name = msg.match[1]
     ScoreField = scorefield()
@@ -222,6 +233,19 @@ module.exports = (robot) ->
       response = "#{name} is not in roster."
       msg.send response
     return
+
+  # setting a user's score
+  robot.respond /set score ([\w\-_]+) ^[-+]?\d+$/i, (msg) ->
+    name = robot.match[2].toLowerCase()
+    newScore = robot.match[3]
+    ScoreField = scorefield()
+    Aliases = aliases()
+    if verifyName(name, ScoreField, Aliases)
+      response = setScore(ScoreField, Aliases, name, newScore)
+      msg.send response
+    else
+      response = "#{name} is not a member of leaderboard. Add using 'bot debut #{name}'."
+      msg.send response
 
 
   robot.on 'plusplus', (event) ->
