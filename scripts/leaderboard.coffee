@@ -9,6 +9,7 @@
 #   bot unset xyz : unsets alias xyz
 #   bot debut xyz : add xyz to the leaderboard
 #   bot retire xyz : remove xyz from the leaderboard
+#   bot set score name score : sets score of name if present in leaderboard
 #
 # Examples:
 #   : will update score for each, accordingly :
