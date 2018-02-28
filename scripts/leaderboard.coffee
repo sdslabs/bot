@@ -106,16 +106,16 @@ module.exports = (robot) ->
       return true
     false
 
-    # set a score to given value
-    setScore = (field, aliases, name) ->
-      score = parseInt(score)
-      name = name.toLowerCase()
-      if (aliases[name])
-        name = alias[name]
-      if Number.isNaN(score)
-        field[name] = score
-        return "#{name}'s score set to #{score}."
+  # set a score to given value
+  setScore = (field, aliases, name, score) ->
+    score = parseInt(score)
+    name = name.toLowerCase()
+    if (aliases[name])?
+      name = alias[name]
+    if isNaN(score)
       return "Please enter a valid score!"
+    field[name] = score
+    return "#{name}'s score set to #{score}."
 
   # listen for any [word](++/--) in chat and react/update score
   robot.hear /[a-zA-Z0-9\-_]+(\-\-|\+\+)/gi, (msg) ->
@@ -235,9 +235,9 @@ module.exports = (robot) ->
     return
 
   # setting a user's score
-  robot.respond /set score ([\w\-_]+) ^[-+]?\d+$/i, (msg) ->
-    name = robot.match[2].toLowerCase()
-    newScore = robot.match[3]
+  robot.respond /set score ([\w\-_]+) ([-+]?\d+)/i, (msg) ->
+    name = msg.match[1].toLowerCase()
+    newScore = msg.match[2]
     ScoreField = scorefield()
     Aliases = aliases()
     if verifyName(name, ScoreField, Aliases)
