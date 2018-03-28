@@ -18,7 +18,7 @@ module.exports = (robot) ->
     message = ""
     msg.http("https://presence.sdslabs.co/?control=present").get() (err, res, body) ->
       if body is '[]'
-        meassage += 'No one here to give me company.'
+        message += 'No one here to give me company.'
       else
         data = JSON.parse(body)
         if data.length is 1
