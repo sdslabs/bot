@@ -206,33 +206,37 @@ module.exports = (robot) ->
     msg.send response
 
   # response for adding to leaderboard
-  robot.respond /debut ([\w\-_]+)/i, (msg) ->
-    name = msg.match[1]
-    ScoreField = scorefield()
-    Aliases = aliases()
-    if verifyName(name, ScoreField, Aliases)
-      response = "#{name} is already in the game."
-      msg.send response
-    else
-      ScoreField[name.toLowerCase()] = 0
-      response = "Added #{name} to roster."
-      msg.send response
+  robot.respond /debut (.+)/i, (msg) ->
+    debut = msg.match[1].toLowerCase()
+    queries = debut.split " "
+    for name in queries
+      ScoreField = scorefield()
+      Aliases = aliases()
+      if verifyName(name, ScoreField, Aliases)
+        response = "#{name} is already in the game."
+        msg.send response
+      else
+        ScoreField[name.toLowerCase()] = 0
+        response = "Added #{name} to roster."
+        msg.send response
     return
 
   # response for removing from leaderboard
-  robot.respond /retire ([\w\-_]+)/i, (msg) ->
-    name = msg.match[1]
-    ScoreField = scorefield()
-    Aliases = aliases()
-    if verifyName(name, ScoreField, Aliases)
-      if Aliases[name]?
-        name = Aliases[name]
-      response = "After a brilliant career, #{name} retires with a score of #{ScoreField[name.toLowerCase()]}."
-      delete ScoreField[name.toLowerCase()]
-      msg.send response
-    else
-      response = "#{name} is not in roster."
-      msg.send response
+  robot.respond /retire (.+)/i, (msg) ->
+    retire = msg.match[1].toLowerCase()
+    queries = retire.split " "
+    for name in queries
+      ScoreField = scorefield()
+      Aliases = aliases()
+      if verifyName(name, ScoreField, Aliases)
+        if Aliases[name]?
+          name = Aliases[name]
+        response = "After a brilliant career, #{name} retires with a score of #{ScoreField[name.toLowerCase()]}."
+        delete ScoreField[name.toLowerCase()]
+        msg.send response
+      else
+        response = "#{name} is not in roster."
+        msg.send response
     return
 
   # setting a user's score
