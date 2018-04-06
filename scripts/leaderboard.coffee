@@ -209,22 +209,27 @@ module.exports = (robot) ->
   robot.respond /debut (.+)/i, (msg) ->
     debut = msg.match[1].toLowerCase()
     queries = debut.split " "
+    name_verified=""
+    name_unset=""
     for name in queries
       ScoreField = scorefield()
       Aliases = aliases()
       if verifyName(name, ScoreField, Aliases)
-        response = "#{name} is already in the game."
-        msg.send response
+        name_verified=name_verified.concat(" ").concat name
       else
         ScoreField[name.toLowerCase()] = 0
-        response = "Added #{name} to roster."
-        msg.send response
+        name_unset=name_unset.concat name.concat(" ")
+    if name_verified!="" 
+      msg.send "#{name_verified}is(are) already in the game."
+    if name_unset!=""
+     msg.send "Added #{name_unset}to roster" 
     return
 
   # response for removing from leaderboard
   robot.respond /retire (.+)/i, (msg) ->
     retire = msg.match[1].toLowerCase()
     queries = retire.split " "
+    name_unset=""
     for name in queries
       ScoreField = scorefield()
       Aliases = aliases()
@@ -235,8 +240,9 @@ module.exports = (robot) ->
         delete ScoreField[name.toLowerCase()]
         msg.send response
       else
-        response = "#{name} is not in roster."
-        msg.send response
+        name_unset=name_unset.concat name.concat(" ") 
+    if name_unset!=""
+     msg.send "#{name_unset}is(are) not in roster"
     return
 
   # setting a user's score
