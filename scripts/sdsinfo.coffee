@@ -12,21 +12,23 @@ moment = require 'moment'
 
 module.exports = (robot) ->
   robot.respond /(info|sdsinfo) (.+)$/i, (msg) ->
-    query = msg.match[2].toLowerCase()
+    information = msg.match[2].toLowerCase()
+    queries = information.split " "
     msg.http(process.env.INFO_SPREADSHEET_URL).get() (err, res, body) ->
-      members = parse body, query
-      if members.length > 0 
-        msg.send "#{members.length} user(s) found matching `#{query.toString()}`"
-        attachments = []
-        attachments.push createAttachment user for user in members
-        robot.emit 'attachment', 
-          msg: msg.message
-          attachments: attachments
-      else
-        if query is "bot"
-          msg.send "That could be Nemo, Yoda or OMGAarti"
+      for query in queries
+        members = parse body, query
+        if members.length > 0 
+          msg.send "#{members.length} user(s) found matching `#{query.toString()}`"
+          attachments = []
+          attachments.push createAttachment user for user in members
+          robot.emit 'attachment', 
+            msg: msg.message
+            attachments: attachments
         else
-          msg.send "I could not find a user matching `#{query.toString()}`"
+          if query is "bot"
+            msg.send "That could be Nemo, Yoda or OMGAarti"
+          else
+            msg.send "I could not find a user matching `#{query.toString()}`"
 
   createAttachment = (user) ->
     body = "Address: #{user[8]}"
