@@ -208,7 +208,8 @@ module.exports = (robot) ->
   # response for adding to leaderboard
   robot.respond /debut (.+)/i, (msg) ->
     debut = msg.match[1].toLowerCase()
-    queries = debut.split " "
+    debut = debut.replace /^\s+|\s+$/g, ""
+    queries = debut.split /\s+/
     name_verified = ""
     name_unset = ""
     for name in queries
@@ -230,7 +231,8 @@ module.exports = (robot) ->
   # response for removing from leaderboard
   robot.respond /retire (.+)/i, (msg) ->
     retire = msg.match[1].toLowerCase()
-    queries = retire.split " "
+    retire = retire.replace /^\s+|\s+$/g, ""
+    queries = retire.split /\s+/
     name_unset = ""
     for name in queries
       ScoreField = scorefield()
