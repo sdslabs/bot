@@ -13,7 +13,8 @@ moment = require 'moment'
 module.exports = (robot) ->
   robot.respond /(info|sdsinfo) (.+)$/i, (msg) ->
     information = msg.match[2].toLowerCase()
-    queries = information.split " "
+    information = information.replace /^\s+|\s+$/g, ""
+    queries = information.split /\s+/
     msg.http(process.env.INFO_SPREADSHEET_URL).get() (err, res, body) ->
       for query in queries
         members = parse body, query
