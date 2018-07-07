@@ -13,6 +13,8 @@
 #   bot pnrstatus <userName> - Shows status of all pnr numbers for a user
 #   bot stoptrack <userName> <pnr> - stops tracking specified
 
+config = require('../config.json');
+
 module.exports = (robot)->
   getAmbiguousUserText = (users) ->
     "Be more specific, I know #{users.length} people named like that: #{(user.name for user in users).join(", ")}"
@@ -42,10 +44,12 @@ module.exports = (robot)->
         msg.send "Status of your PNRs\n"
         for pnrNum in user.pnr
           request = require 'request'
-          uri = "https://api.railwayapi.com/v2/pnr-status/pnr/#{pnrNum}/apikey/53d6y5tcta"
+          msg.send "#{config.pnr.uri}#{pnrNum}/apikey/#{config.pnr.key}"
+          uri = "#{config.pnr.uri}#{pnrNum}/apikey/#{config.pnr.key}"
           request.get {uri, json: true}, (err, res, body) ->
-            string = ""
-            string += "Train name: #{body.train['name']}\n"
+            if body.response_code isnt 200
+              msg.send "Request Failed:: Status: #{body.response_code}"
+            string = "Train name: #{body.train['name']}\n"
             string += "Chart Prepared: #{body['chart_prepared']}\n"
             for pass in body.passengers
               string += "Passenger No: #{pass.no} -- Status: #{pass.current_status}\n"
