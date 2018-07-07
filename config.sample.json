@@ -1,0 +1,6 @@
+{
+  "pnr" : {
+    "uri": "https://api.railwayapi.com/v2/pnr-status/pnr/",
+    "key": "API_KEY"
+  }
+}
