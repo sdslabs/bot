@@ -248,7 +248,7 @@ module.exports = (robot) ->
     if verifyName(name, ScoreField, Aliases)
       rank = getRank(ScoreField[name])
       index = ranks.indexOf(rank)
-      msg.send "#{name} is a :rank#{index}: #{rank}"
+      msg.send "#{name} is a :rank#{index}: #{rank} with #{ScoreField[name]} points"
 
   # response for setting an alias
   robot.respond /alias ([a-zA-Z0-9_]* [a-zA-Z0-9_]*)/i, (msg) ->
