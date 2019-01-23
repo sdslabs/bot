@@ -44,6 +44,25 @@ module.exports = (robot) ->
     "Legend of SDSLabs" # Evergreen rank
   ]
 
+  pointThresholds = [
+    5
+    8
+    13
+    21
+    34
+    55
+    70
+    100
+    152
+    209
+    266
+    310
+    387
+    477
+    577
+    610
+  ]
+
   # return object to store data for all keywords
   # using this, stores the data in brain's "scorefield" key
   scorefield = () ->
@@ -170,8 +189,8 @@ module.exports = (robot) ->
       return ranks[14]
     if score <= 610
       return ranks[15]
-    if score >= 610
-      return ranks[15]
+
+    return ranks[15]
 
 
   # listen for any [word](++/--) in chat and react/update score
@@ -224,8 +243,8 @@ module.exports = (robot) ->
       result.rank = getRank(result.New)
       result.index = ranks.indexOf(result.rank)
 
-      # generates response message for reply
-      newmsg = "[#{result.Response} #{result.Name} is now at :rank#{result.index}: #{result.rank}]"
+      # generates response message for reply. 16 is the number of ranks
+      newmsg = "#{result.Response} #{result.Name} now requires #{pointThresholds[(result.index + 1) % 16]} points to reach :rank#{(result.index + 1) % 16}: #{ranks[(result.index + 1) % 16]}"
       oldmsg = oldmsg.substr(0, start+testword.length) + newmsg + oldmsg.substr(start+testword.length)
 
     # reply with updated message
@@ -335,5 +354,5 @@ module.exports = (robot) ->
     result = updateScore("#{event.username}++", ScoreField, aliases())
     result.rank = getRank(result.New)
     result.index = ranks.indexOf(result.rank)
-    newmsg = "#{event.username}++ [#{result.Response} #{result.Name} is now at :rank#{result.index}: #{result.rank}]"
+    newmsg = "#{event.username}++ [#{result.Response} #{result.rank} #{result.Name} now requires #{pointThresholds[(result.index + 1) % 16]} points to reach :rank#{(result.index + 1) % 16}: #{ranks[(result.index + 1) % 16]}"
     robot.send room: 'general', newmsg
