@@ -192,6 +192,11 @@ module.exports = (robot) ->
 
     return ranks[15]
 
+  isLeveledUp = (score) ->
+    for i in [0..15]
+      if score == pointThresholds[i] + 1
+        return true
+    return false
 
   # listen for any [word](++/--) in chat and react/update score
   robot.hear /[a-zA-Z0-9\-_]+(\-\-|\+\+)/gi, (msg) ->
@@ -243,8 +248,13 @@ module.exports = (robot) ->
       result.rank = getRank(result.New)
       result.index = ranks.indexOf(result.rank)
 
-      # generates response message for reply. 16 is the number of ranks
-      newmsg = "#{result.Response} #{result.Name} now requires #{pointThresholds[(result.index + 1) % 16]} points to reach :rank#{(result.index + 1) % 16}: #{ranks[(result.index + 1) % 16]}"
+      # generates response message for reply. 16 is the number of specified ranks in the `ranks` array
+      if result.index == 15
+        newmsg = "Legends are forever alive in history"
+      else
+      newmsg = "#{result.Response} #{result.Name} now requires #{pointThresholds[(result.index)] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
+      if isLeveledUp(result.New)
+        newmsg = "\n:fire: Congratulations for reaching :rank#{result.index}: #{ranks[result.index]}\n#{result.Response} #{result.Name} now requires #{pointThresholds[(result.index + 1)] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
       oldmsg = oldmsg.substr(0, start+testword.length) + newmsg + oldmsg.substr(start+testword.length)
 
     # reply with updated message
@@ -354,5 +364,11 @@ module.exports = (robot) ->
     result = updateScore("#{event.username}++", ScoreField, aliases())
     result.rank = getRank(result.New)
     result.index = ranks.indexOf(result.rank)
-    newmsg = "#{event.username}++ [#{result.Response} #{result.rank} #{result.Name} now requires #{pointThresholds[(result.index + 1) % 16]} points to reach :rank#{(result.index + 1) % 16}: #{ranks[(result.index + 1) % 16]}"
+
+    if result.index == 15
+        newmsg = "Legends are forever alive in history"
+    else
+    newmsg = "#{event.username}++ [#{result.Response} #{result.rank} #{result.Name} now requires #{pointThresholds[result.index] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
+    if isLeveledUp(result.New)
+        newmsg = "\n:fire: Congratulations for reaching :rank#{result.index}: #{ranks[result.index]}\n#{event.username}++ [#{result.Response} #{result.rank} #{result.Name} now requires #{pointThresholds[result.index + 1] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
     robot.send room: 'general', newmsg
