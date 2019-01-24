@@ -157,14 +157,14 @@ module.exports = (robot) ->
     return "#{name}'s score set to #{score}."
 
   getRank = (score) ->
-    for i in [0..15]
+    for i in [0..ranks.length - 1]
       if score <= pointThresholds[i]
         return ranks[i]
 
-    return ranks[15]
+    return ranks[ranks.length - 1]
 
   isLeveledUp = (score) ->
-    for i in [0..15]
+    for i in [0..ranks.length - 1]
       if score == pointThresholds[i] + 1
         return true
     return false
@@ -220,7 +220,7 @@ module.exports = (robot) ->
       result.index = ranks.indexOf(result.rank)
 
       # generates response message for reply. 16 is the number of specified ranks in the `ranks` array
-      if result.index == 15
+      if result.index == ranks.length - 1
         newmsg = "Legends are forever alive in history"
       else
       newmsg = "#{result.Response} #{result.Name} now requires #{pointThresholds[(result.index)] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
@@ -336,7 +336,7 @@ module.exports = (robot) ->
     result.rank = getRank(result.New)
     result.index = ranks.indexOf(result.rank)
 
-    if result.index == 15
+    if result.index == ranks.length - 1
         newmsg = "Legends are forever alive in history"
     else
     newmsg = "#{event.username}++ [#{result.Response} #{result.rank} #{result.Name} now requires #{pointThresholds[result.index] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
