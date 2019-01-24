@@ -25,6 +25,44 @@
 
 module.exports = (robot) ->
 
+  ranks = [
+    "Rookie" # Red ranks
+    "Rookie II"
+    "Rookie III"
+    "General" # Green ranks
+    "General II"
+    "General III"
+    "Bastion" # Blue ranks
+    "Bastion II"
+    "Bastion III"
+    "Viscount" # Yellow ranks
+    "Viscount II"
+    "Viscount III"
+    "Bearer of Excellence" # White ranks
+    "Bearer of Excellence II"
+    "Bearer of Excellence III"
+    "Legend of SDSLabs" # Evergreen rank
+  ]
+
+  pointThresholds = [
+    5
+    8
+    13
+    21
+    34
+    55
+    70
+    100
+    152
+    209
+    266
+    310
+    387
+    477
+    577
+    610
+  ]
+
   # return object to store data for all keywords
   # using this, stores the data in brain's "scorefield" key
   scorefield = () ->
@@ -54,7 +92,7 @@ module.exports = (robot) ->
       if aliases[name.toLowerCase()]?
          name = aliases[name.toLowerCase()]
       field[name.toLowerCase()] = lastScore(name, field) + 1
-      response = "woot!"
+      response = "\b\n:heavy_plus_sign:"
 
     # if there is to be `minus` in score
     else if word.indexOf("--") >= 0
@@ -62,7 +100,7 @@ module.exports = (robot) ->
       if aliases[name.toLowerCase()]?
         name = aliases[name.toLowerCase()]
       field[name.toLowerCase()] = lastScore(name, field) - 1
-      response = "ouch!"
+      response = "\b\n:heavy_exclamation_mark:"
 
     newscore = field[name.toLowerCase()]
 
@@ -118,6 +156,19 @@ module.exports = (robot) ->
     field[name] = score
     return "#{name}'s score set to #{score}."
 
+  getRank = (score) ->
+    for i in [0..ranks.length - 1]
+      if score <= pointThresholds[i]
+        return ranks[i]
+
+    return ranks[ranks.length - 1]
+
+  isLeveledUp = (score) ->
+    for i in [0..ranks.length - 1]
+      if score == pointThresholds[i] + 1
+        return true
+    return false
+
   # listen for any [word](++/--) in chat and react/update score
   robot.hear /[a-zA-Z0-9\-_]+(\-\-|\+\+)/gi, (msg) ->
 
@@ -164,14 +215,22 @@ module.exports = (robot) ->
         start+=testword.length
       start-=testword.length
 
-      # generates response message for reply
-      newmsg = "[#{result.Response} #{result.Name} now at #{result.New}]"
+      # convert score to rank
+      result.rank = getRank(result.New)
+      result.index = ranks.indexOf(result.rank)
+
+      # generates response message for reply. 16 is the number of specified ranks in the `ranks` array
+      if result.index == ranks.length - 1
+        newmsg = "Legends are forever alive in history"
+      else
+      newmsg = "#{result.Response} #{result.Name} now requires #{pointThresholds[(result.index)] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
+      if isLeveledUp(result.New)
+        newmsg = "\n:fire: Congratulations for reaching :rank#{result.index}: #{ranks[result.index]}\n#{result.Response} #{result.Name} now requires #{pointThresholds[(result.index + 1)] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
       oldmsg = oldmsg.substr(0, start+testword.length) + newmsg + oldmsg.substr(start+testword.length)
 
     # reply with updated message
     if (oldmsg isnt recvmsg)
       msg.send "#{oldmsg}"
-
 
   # response for score status of any <keyword>
   robot.respond /score ([\w\-_]+)/i, (msg) ->
@@ -187,7 +246,9 @@ module.exports = (robot) ->
       name = Aliases[name]
 
     if verifyName(name, ScoreField, Aliases)
-      msg.send "#{name} : #{ScoreField[name]}"
+      rank = getRank(ScoreField[name])
+      index = ranks.indexOf(rank)
+      msg.send "#{name} is a :rank#{index}: #{rank} with #{ScoreField[name]} points"
 
   # response for setting an alias
   robot.respond /alias ([a-zA-Z0-9_]* [a-zA-Z0-9_]*)/i, (msg) ->
@@ -225,7 +286,7 @@ module.exports = (robot) ->
       msg.send "#{name_verified} is(are) already in the game."
     if name_unset != ""
       name_unset = name_unset.substr 0,name_unset.length-1
-      msg.send "Added #{name_unset} to roster." 
+      msg.send "Added #{name_unset} to roster."
     return
 
   # response for removing from leaderboard
@@ -240,11 +301,13 @@ module.exports = (robot) ->
       if verifyName(name, ScoreField, Aliases)
         if Aliases[name]?
           name = Aliases[name]
-        response = "After a brilliant career, #{name} retires with a score of #{ScoreField[name.toLowerCase()]}."
+        rank = getRank(ScoreField[name.toLowerCase()])
+        index = ranks.indexOf(rank)
+        response = "After a brilliant career, :rank#{index}: #{rank} #{name} retires with a score of #{ScoreField[name.toLowerCase()]}."
         delete ScoreField[name.toLowerCase()]
         msg.send response
       else
-        name_unset = name_unset.concat name.concat(" ") 
+        name_unset = name_unset.concat name.concat(" ")
     if name_unset != ""
       name_unset = name_unset.substr 0,name_unset.length-1
       msg.send "#{name_unset} is(are) not in roster."
@@ -270,5 +333,13 @@ module.exports = (robot) ->
   robot.on 'plusplus', (event) ->
     ScoreField = scorefield()
     result = updateScore("#{event.username}++", ScoreField, aliases())
-    newmsg = "#{event.username}++ [#{result.Response} #{result.Name} now at #{result.New}]"
+    result.rank = getRank(result.New)
+    result.index = ranks.indexOf(result.rank)
+
+    if result.index == ranks.length - 1
+        newmsg = "Legends are forever alive in history"
+    else
+    newmsg = "#{event.username}++ [#{result.Response} #{result.rank} #{result.Name} now requires #{pointThresholds[result.index] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
+    if isLeveledUp(result.New)
+        newmsg = "\n:fire: Congratulations for reaching :rank#{result.index}: #{ranks[result.index]}\n#{event.username}++ [#{result.Response} #{result.rank} #{result.Name} now requires #{pointThresholds[result.index + 1] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
     robot.send room: 'general', newmsg
