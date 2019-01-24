@@ -157,38 +157,9 @@ module.exports = (robot) ->
     return "#{name}'s score set to #{score}."
 
   getRank = (score) ->
-    if score <= 5
-      return ranks[0]
-    if score <= 8
-      return ranks[1]
-    if score <= 13
-      return ranks[2]
-    if score <= 21
-      return ranks[3]
-    if score <= 34
-      return ranks[4]
-    if score <= 55
-      return ranks[5]
-    if score <= 70
-      return ranks[6]
-    if score <= 100
-      return ranks[7]
-    if score <= 152
-      return ranks[8]
-    if score <= 209
-      return ranks[9]
-    if score <= 266
-      return ranks[10]
-    if score <= 310
-      return ranks[11]
-    if score <= 387
-      return ranks[12]
-    if score <= 477
-      return ranks[13]
-    if score <= 577
-      return ranks[14]
-    if score <= 610
-      return ranks[15]
+    for i in [0..15]
+      if score <= pointThresholds[i]
+        return ranks[i]
 
     return ranks[15]
 
