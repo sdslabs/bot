@@ -3,100 +3,168 @@
 #   we developed this to use in our 'Slack' team instance
 #
 # Commands:
-#   listen for * has/have keys in chat text and displays users with the keys/updates the user having keys
-#   bot who has keys : returns current user having lab keys
-#   bot i have keys : set's the key-holder to the user who posted
-#   bot i dont have keys : unsets the user who posted from key-holders
-#	bot xyz has keys : sets xyz as the holder of keys
+#   bot who (has the|have the|has|have) (kb|kasturba|rv|ravindra|master) (key|keys) : returns current user having respective lab keys
+#   bot i (have the|have) (kb|kasturba|rv|ravindra|master) (key|keys) : set's the respective key-holder to the user who posted
+#   bot i (do not|don't|dont) (has the|have the|has|have) (kb|kasturba|rv|ravindra|master) (key|keys) : unsets the user who posted from the respective key-holders
+#	bot uttu (has the|have the|has|have) (kb|kasturba|rv|ravindra|master) (key|keys) : sets uttu as the holder of respective keys
+#	bot (i|I) (have given the|had given the|have given|gave the|had given|gave) (kb|kasturba|rv|ravindra|master) (key|keys) to uttu : sets uttu as the holder of respective keys
 #
 # Examples:
-#   :bot who has keys
-#   :bot i have keys
-#   :bot i dont have keys
-#	:bot who has keys
-#	:bot ravi has keys
+#   :bot who has kb keys
+#   :bot i have rv keys
+#   :bot i dont have master keys
+#	:bot who has kasturba keys
+#	:bot ravi has ravindra keys
 #
 # Author:
 #   Punit Dhoot (@pdhoot)
 #   Developer at SDSLabs (@sdslabs)
 
 module.exports = (robot)->
-
-	key = ()->
-		Key = robot.brain.get("key") or ""
-		robot.brain.set("key" ,Key)
+	kb_key = ()->
+		Key = robot.brain.get("kb_key") or ""
+		robot.brain.set("kb_key" ,Key)
 		Key	
+	ravindra_key = ()->
+		Key = robot.brain.get("ravindra_key") or ""
+		robot.brain.set("ravindra_key" ,Key)
+		Key
+	master_key = ()->
+		Key = robot.brain.get("master_key") or ""
+		robot.brain.set("master_key" ,Key)
+		Key
 
-	
-	robot.respond /i have (a key|the key|key|keys)/i, (msg)->
+#this section belongs to "i have keys"
+	robot.respond /i (have the|have) (.+) (key|keys)/i, (msg)->
+		keyname = msg.match[2]
 		name = msg.message.user.name 
 		user = robot.brain.userForName name
-		k = key()
-		if typeof user is 'object'
-			msg.send "Okay #{name} has keys"
-			k = user.name
-		robot.brain.set("key",k)	
+		unless keyname not in  ["rv", "ravindra", "kb", "kasturba", "master"]
+			if keyname is 'ravindra' || keyname is 'rv'
+				key_holder = ravindra_key()
+				key_holder = user.name
+				robot.brain.set("ravindra_key",key_holder)
+			else if keyname is 'kb' || keyname is 'kasturba'
+				key_holder = kb_key()
+				key_holder = user.name
+				robot.brain.set("kb_key",key_holder)
+			else if keyname is 'master'
+				key_holder = master_key()
+				key_holder = user.name
+				robot.brain.set("master_key",key_holder)
+			if typeof user is 'object'
+				msg.send "Okay #{name} has #{keyname} keys"	
 
-
-	robot.respond /i (don\'t|dont|do not) (has|have) (the key|key|keys|a key)/i , (msg)->
+#this section belongs to "i dont have key"
+	robot.respond /i (do not|don\'t|dont) (has the|have the|has|have) (.+) (key|keys)/i , (msg)->
+		keyname = msg.match[3]
 		name = msg.message.user.name
 		user = robot.brain.userForName name
-		k = key()
-		if k is name
-			k = ""
-		if typeof user is 'object'
-			if k is ""
-				msg.send "Okay #{name} doesn't have keys. Who got the keys then?"
-			else
-				msg.send "Yes , i know buddy, its because #{k} has got the keys"	
-		robot.brain.set("key",k)	
+		unless keyname not in  ["rv", "ravindra", "kb", "kasturba", "master"]
+			if keyname is 'ravindra' || keyname is 'rv'
+				key_holder = ravindra_key()
+				if key_holder is name
+					key_holder = ""	
+				robot.brain.set("ravindra_key",key_holder)	
+			else if keyname is 'kb' || keyname is 'kasturba'
+				key_holder = kb_key()
+				if key_holder is name
+					key_holder = ""
+				robot.brain.set("kb_key",key_holder)	
+			else if keyname is 'master'
+				key_holder = master_key()
+				if key_holder is name
+					key_holder = ""	
+				robot.brain.set("master_key",key_holder)
+			if typeof user is 'object'
+				if key_holder is ""
+					msg.send "Okay #{name} doesn't have #{keyname} keys. Who got the #{keyname} keys then?"
+				else
+					msg.send "Yes , I know buddy, its because #{key_holder} has got the #{keyname} keys"
 
-
-	robot.respond /(.+) (has|have) (the key|key|keys|a key)/i , (msg)->
+#this section belongs to "$name has keys"
+	robot.respond /(.+) (has the|have the|has|have) (.+) (key|keys)/i , (msg)->
 		othername = msg.match[1]
+		keyname = msg.match[3]
 		name = msg.message.user.name
-		k = key()
 		unless othername in ["who", "who all","Who", "Who all" , "i" , "I" , "i don't" , "i dont" , "i do not" , "I don't" , "I dont" , "I do not"]
-			if othername is 'you'
-				msg.send "How am I supposed to take those keys? #{name} is a liar!"
-			else if othername is robot.name
-				msg.send "How am I supposed to take those keys? #{name} is a liar!"
-			else
+			unless keyname not in ["rv", "ravindra", "kb", "kasturba", "master"]
 				users = robot.brain.userForName othername
 				if users is null
-					msg.send "I don't know anyone by the name #{othername}"
+					key_holder = null
 				else
-					k = users.name
-					msg.send "Okay, so now the keys are with #{users.name}"	
+					key_holder = users.name
+				if key_holder is null
+					if othername is 'you'
+						msg.send "How am I supposed to take those #{keyname} keys? #{name} is a liar!"
+					else if othername is robot.name
+						msg.send "That's utter lies! How can you blame a bot to have the keys?"
+					else
+						msg.send "I don't know anyone by the name #{othername}"
+				else
+					if keyname is 'ravindra' || keyname is 'rv'
+						robot.brain.set("ravindra_key",key_holder)
+					else if keyname is 'kb' || keyname is 'kasturba'
+						robot.brain.set("kb_key",key_holder)
+					else if keyname is 'master'
+						robot.brain.set("master_key",key_holder)
+					msg.send "Okay, so now the #{keyname} keys are with #{othername}"	
 
-		robot.brain.set("key",k)			
-
-	robot.respond /(i|I) (have given|gave|had given) (the key|key|keys|a key|the keys) to (.+)/i , (msg)->
-		othername = msg.match[4]
+#this section belongs to "i gave the keys to $name"
+	robot.respond /(i|I) (have given the|had given the|have given|gave the|had given|gave) (.+) (key|keys) to (.+)/i , (msg)->
+		othername = msg.match[5]
+		keyname = msg.match[3]
 		name = msg.message.user.name
-		k = key()
-		if othername is 'you'
-			msg.send "That's utter lies! How can you blame a bot to have the keys?"
-		else if othername is robot.name
-			msg.send "That's utter lies! How can you blame a bot to have the keys?"
-		else
+		unless keyname not in ["rv", "ravindra", "kb", "kasturba", "master"]
 			users = robot.brain.userForName othername
 			if users is null
-				msg.send "I don't know anyone by the name #{othername}"
+				key_holder = null
 			else
-				k = users.name
-				msg.send "Okay, so now the keys are with #{users.name}"	
-			
-
-		robot.brain.set("key",k)		
-				
-	robot.respond /(who|who all) (has|have) (the key|key|keys|a key)/i , (msg)->
-		k = key()
-		msgText = k
-		if msgText is ""
-			msg.send "Ah! Nobody informed me about the keys. Don't hold me responsible for this :expressionless:"
-		else
-			msgText+=" has keys"
-			msg.send msgText	
-		robot.brain.set("key" ,k)	
-
+				key_holder = users.name
+			if key_holder is null
+				if othername is 'you'
+					msg.send "That's utter lies! How can you blame a bot to have the keys? #{name} is a liar!"
+				else if othername is robot.name
+					msg.send "That's utter lies! How can you blame a bot to have the keys?"
+				else
+					msg.send "I don't know anyone by the name #{othername}"
+			else
+				if keyname is 'ravindra' || keyname is 'rv'
+					robot.brain.set("ravindra_key",key_holder)	
+				else if keyname is 'kb' || keyname is 'kasturba'
+					robot.brain.set("kb_key",key_holder)
+				else if keyname is 'master'
+					robot.brain.set("master_key",key_holder)
+				msg.send "Okay, so now the #{keyname} keys are with #{users.name}"
+		
+#this section is to print the details about the key holder.		
+	robot.respond /who (has the|have the|has|have) (.+) (key|keys)/i , (msg)->
+		keyname = msg.match[2]
+		if keyname is 'ravindra' || keyname is 'rv'
+			key_holder = ravindra_key()
+			msgText = key_holder
+			if msgText is ""
+				msg.send "Ah! Nobody informed me about the keys. Don't hold me responsible for this :expressionless:"
+			else
+				msgText+=" has ravindra keys"
+				msg.send msgText	
+			robot.brain.set("ravindra_key" ,key_holder)
+		else if keyname is 'kasturba' || keyname is 'kb'
+			key_holder = kb_key()
+			msgText = key_holder
+			if msgText is ""
+				msg.send "Ah! Nobody informed me about the keys. Don't hold me responsible for this :expressionless:"
+			else
+				msgText+=" has kb keys"
+				msg.send msgText	
+			robot.brain.set("kb_key" ,key_holder)
+		else if keyname is 'master'
+			key_holder = master_key()
+			msgText = key_holder
+			if msgText is ""
+				msg.send "Ah! Nobody informed me about the keys. Don't hold me responsible for this :expressionless:"
+			else
+				msgText+=" has master keys"
+				msg.send msgText	
+			robot.brain.set("master_key" ,key_holder)
+	
