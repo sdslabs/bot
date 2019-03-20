@@ -167,4 +167,24 @@ module.exports = (robot)->
 				msgText+=" has master keys"
 				msg.send msgText	
 			robot.brain.set("master_key" ,key_holder)
-	
+	robot.respond /who (has the|have the|has|have) (key|keys)/i , (msg)->
+		key_holder1 = ravindra_key()
+		key_holder2 = kb_key()
+		key_holder3 = master_key()
+		msgText=""
+		if key_holder1 != ""
+			msgText+=key_holder1
+			msgText+=" has ravindra keys.\n"
+		if key_holder2 != ""
+			msgText+=key_holder2
+			msgText+=" has kb keys.\n"
+		if key_holder3 != ""
+			msgText+=key_holder3
+			msgText+=" has master keys.\n"
+		if msgText is ""
+			msg.send "Ah! Nobody informed me about any keys. Don't hold me responsible for this :expressionless:"
+		else
+			msg.send msgText
+		robot.brain.set("ravindra_key" ,key_holder1)
+		robot.brain.set("kb_key" ,key_holder2)
+		robot.brain.set("master_key" ,key_holder3)
