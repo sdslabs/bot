@@ -13,11 +13,7 @@
 #   shashankmehta.in
 
 quotes = [
-  "Never in your life",
-  "You should go kill yourself",
-  "You should go kill yourself for that joke",
-  "_does a matka dance_",
-  "for what joy?"
+  "@manaschaudhary2000"
 ]
 
 
