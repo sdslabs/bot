@@ -5,11 +5,12 @@
 # Commands:
 #   listen for keyword++ or keyword-- in chat text and updates score for each
 #   bot score keyword : returns current score of 'keyword'
-#   bot alias abc xyz : sets xyz as an alias of abc
+#   bot alias abc xyz : sets xyz as an alias of abc(abc should be the username you see on "bot show users")
 #   bot unset xyz : unsets alias xyz
 #   bot debut xyz : add xyz to the leaderboard
 #   bot retire xyz : remove xyz from the leaderboard
 #   bot set score name score : sets score of name if present in leaderboard
+#   tagging someone by @<ALIAS> will lead to the bot replying with their real name(best practice to set as their userid, eg- @manaschaudhary2000)
 #
 # Examples:
 #   : will update score for each, accordingly :
@@ -169,6 +170,19 @@ module.exports = (robot) ->
         return true
     return false
 
+  robot.hear /[@][a-zA-Z0-9\-_]+/gi, (msg) ->
+    Aliases = aliases()
+    newmsg = ''
+    for i in [0...msg.match.length]
+      testword = msg.match[i]
+      alias = testword.substr(1, testword.length)
+      if !Aliases[alias]?
+        continue
+      newmsg += '@' + Aliases[alias] + ' '
+    if (newmsg != '')
+      msg.send(newmsg)
+            
+
   # listen for any [word](++/--) in chat and react/update score
   robot.hear /[a-zA-Z0-9\-_]+(\-\-|\+\+)/gi, (msg) ->
 
@@ -223,7 +237,7 @@ module.exports = (robot) ->
       if result.index == ranks.length - 1
         newmsg = "Legends are forever alive in history"
       else
-      newmsg = "#{result.Response} #{result.Name} now requires #{pointThresholds[(result.index)] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
+        newmsg = "#{result.Response} #{result.Name} now requires #{pointThresholds[(result.index)] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
       if isLeveledUp(result.New)
         newmsg = "\n:fire: Congratulations for reaching :rank#{result.index}: #{ranks[result.index]}\n#{result.Response} #{result.Name} now requires #{pointThresholds[(result.index + 1)] - result.New + 1} point(s) to reach :rank#{result.index + 1}: #{ranks[result.index + 1]}\n"
       oldmsg = oldmsg.substr(0, start+testword.length) + newmsg + oldmsg.substr(start+testword.length)
@@ -251,16 +265,23 @@ module.exports = (robot) ->
       msg.send "#{name} is a :rank#{index}: #{rank} with #{ScoreField[name]} points"
 
   # response for setting an alias
-  robot.respond /alias ([a-zA-Z0-9_]* [a-zA-Z0-9_]*)/i, (msg) ->
+  robot.respond /alias ([a-zA-Z0-9_]* [a-zA-Z0-9_\-]*)/i, (msg) ->
     Aliases = aliases()
     message = (msg.match[0].split 'alias ')[1].split ' '
     name = message[0]
     alias = message[1]
-    response = addAlias(name,alias,Aliases)
-    msg.send response
+    exists = false
+    for own key, user of robot.brain.data.users
+      if (name == user.name)
+        exists = true
+        break
+    if (exists == false)
+      msg.send name + " not found in users list"
+    else
+      msg.send addAlias(name,alias,Aliases)
 
   # response for unsetting an alias
-  robot.respond /unset ([a-zA-Z0-9_]*)/i, (msg) ->
+  robot.respond /unset ([a-zA-Z0-9_\-]*)/i, (msg) ->
     Aliases = aliases()
     alias = (msg.match[0].split 'unset ')[1]
     response = removeAlias(alias,Aliases)
