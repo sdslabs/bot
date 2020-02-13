@@ -265,7 +265,7 @@ module.exports = (robot) ->
       msg.send "#{name} is a :rank#{index}: #{rank} with #{ScoreField[name]} points"
 
   # response for setting an alias
-  robot.respond /alias ([a-zA-Z0-9_]* [a-zA-Z0-9_\-]*)/i, (msg) ->
+  robot.respond /alias ([a-zA-Z0-9_\-.]* [a-zA-Z0-9_\-]*)/i, (msg) ->
     Aliases = aliases()
     message = (msg.match[0].split 'alias ')[1].split ' '
     name = message[0]
