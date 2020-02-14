@@ -10,7 +10,6 @@
 #   bot debut xyz : add xyz to the leaderboard
 #   bot retire xyz : remove xyz from the leaderboard
 #   bot set score name score : sets score of name if present in leaderboard
-#   tagging someone by @<ALIAS> will lead to the bot replying with their real name(best practice to set as their userid, eg- @manaschaudhary2000)
 #
 # Examples:
 #   : will update score for each, accordingly :
@@ -125,7 +124,7 @@ module.exports = (robot) ->
   removeAlias = (alias, aliases) ->
    alias = alias.toLowerCase()
    if aliases[alias]?
-      aliases[alias] = ""
+      delete aliases[alias]
       message = "Unset alias " + alias
    else
      message = alias + " is not an alias"
@@ -169,19 +168,6 @@ module.exports = (robot) ->
       if score == pointThresholds[i] + 1
         return true
     return false
-
-  robot.hear /[@][a-zA-Z0-9\-_]+/gi, (msg) ->
-    Aliases = aliases()
-    newmsg = ''
-    for i in [0...msg.match.length]
-      testword = msg.match[i]
-      alias = testword.substr(1, testword.length)
-      if !Aliases[alias]?
-        continue
-      newmsg += '@' + Aliases[alias] + ' '
-    if (newmsg != '')
-      msg.send(newmsg)
-            
 
   # listen for any [word](++/--) in chat and react/update score
   robot.hear /[a-zA-Z0-9\-_]+(\-\-|\+\+)/gi, (msg) ->
