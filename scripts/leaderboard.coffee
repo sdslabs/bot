@@ -125,7 +125,7 @@ module.exports = (robot) ->
   removeAlias = (alias, aliases) ->
    alias = alias.toLowerCase()
    if aliases[alias]?
-      aliases[alias] = ""
+      delete aliases[alias]
       message = "Unset alias " + alias
    else
      message = alias + " is not an alias"
