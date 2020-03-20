@@ -120,6 +120,15 @@ module.exports = (robot) ->
       message = alias + " is already an alias of " + aliases[alias]
     message
 
+  # checks is a user is present in brain
+  checkUser = (name) ->
+    exists = false
+    for own key, user of robot.brain.data.users
+      if (name == user.name)
+        exists = true
+        break
+    exists
+
   # removes a alias
   removeAlias = (alias, aliases) ->
    alias = alias.toLowerCase()
@@ -256,11 +265,7 @@ module.exports = (robot) ->
     message = (msg.match[0].split 'alias ')[1].split ' '
     name = message[0]
     alias = message[1]
-    exists = false
-    for own key, user of robot.brain.data.users
-      if (name == user.name)
-        exists = true
-        break
+    exists = checkUser(name)
     if (exists == false)
       msg.send name + " not found in users list"
     else
@@ -278,22 +283,22 @@ module.exports = (robot) ->
     debut = msg.match[1].toLowerCase()
     debut = debut.replace /^\s+|\s+$/g, ""
     queries = debut.split /\s+/
-    name_verified = ""
-    name_unset = ""
+    name_not_added = ""
+    name_added = ""
     for name in queries
       ScoreField = scorefield()
       Aliases = aliases()
-      if verifyName(name, ScoreField, Aliases)
-        name_verified = name_verified.concat name.concat(" ")
-      else
+      if !verifyName(name, ScoreField, Aliases) && checkUser(name.toLowerCase())
         ScoreField[name.toLowerCase()] = 0
-        name_unset = name_unset.concat name.concat(" ")
-    if name_verified != ""
-      name_verified = name_verified.substr 0,name_verified.length-1
-      msg.send "#{name_verified} is(are) already in the game."
-    if name_unset != ""
-      name_unset = name_unset.substr 0,name_unset.length-1
-      msg.send "Added #{name_unset} to roster."
+        name_added = name_added.concat name.concat(" ")
+      else
+        name_not_added = name_not_added.concat name.concat(" ")
+    if name_not_added != ""
+      name_not_added = name_not_added.substr 0,name_not_added.length-1
+      msg.send "#{name_not_added} is(are) already in the game or is(are)n't valid user(s)."
+    if name_added != ""
+      name_added = name_added.substr 0,name_added.length-1
+      msg.send "Added #{name_added} to roster."
     return
 
   # response for removing from leaderboard
