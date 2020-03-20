@@ -17,12 +17,16 @@
 
 module.exports = (robot) ->
   #Get the data from Jsonblob's api for the first time
-  robot.http(process.env.JSONBLOB_URL).get() (err, res, body) ->
+  robot.http(process.env.JSONBLOB_URL)
+  .header("Content-Type","application/json")
+  .header("Authorization", "Bearer " + process.env.JSONBLOB_TOKEN)
+  .get() (err, res, body) ->
     robot.brain.mergeData JSON.parse(body)
 
   robot.brain.on 'save', (data = {}) ->
     robot.http(process.env.JSONBLOB_URL)
     .header("Accept", "application/json")
     .header("Content-Type","application/json")
+    .header("Authorization", "Bearer " + process.env.JSONBLOB_TOKEN)
     .put(JSON.stringify(data)) (err, res, body) ->
       console.log err if err
