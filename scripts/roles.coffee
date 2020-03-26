@@ -26,7 +26,7 @@ module.exports = (robot) ->
     if name is "you"
       msg.send "Who ain't I?"
     else if name is robot.name
-      msg.send "Yours truly Kiss Shot Acerola Orion Heart Under Blade :kissing_heart:"
+      msg.send "Yours truly Kiss-Shot Acerola-Orion Heart-Under-Blade, :kaka:"
     else
       users = robot.brain.usersForFuzzyName(name)
       if users.length is 1
